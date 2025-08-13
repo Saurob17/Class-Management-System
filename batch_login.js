@@ -8,13 +8,22 @@ module.exports = function(app, con) {
     con.query(query, [batch_user, batch_pass], (err, result) => {
       if (err) {
         console.error("SQL ERROR:", err);
-        return res.status(500).send("❌ Database Error");
+        return res.status(500).json({ success: false, message: "❌ Database Error" });
       }
 
       if (result.length > 0) {
-        res.sendFile(path.join(__dirname, 'Public', 'student_page.html'));
+        // Send batch info as JSON (like teacher login)
+        res.json({
+          success: true,
+          batchId: result[0].id,
+          semester: result[0].semester, // Make sure your table has this column
+          redirect: '/student_page.html'
+        });
       } else {
-        res.send("❌ Invalid Batch Login.");
+        res.json({
+          success: false,
+          message: "❌ Invalid Batch Login."
+        });
       }
     });
   });

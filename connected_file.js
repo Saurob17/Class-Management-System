@@ -1,5 +1,3 @@
-
-
 //connected_file.js
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,6 +6,7 @@ const con = require('./server');
 
 const teacher_page = require('./teachers_pass_veri');
 const batch_page = require('./batch_login');  // ✅ ব্যাচ লজিক ফাইল ইমপোর্ট
+const student_pages = require('./student_pages'); // Student API endpoints
 
 const app = express();
 
@@ -38,6 +37,7 @@ app.get('/', (req, res) => {
 // Route handler modules
 teacher_page(app, con);
 batch_page(app, con);  // ✅ ব্যাচ লগইন রাউট যুক্ত
+student_pages(app, con); // Register student API endpoints
 
 const PORT = 700;
 app.listen(PORT, () => {

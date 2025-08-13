@@ -330,7 +330,7 @@
         <li><a href="#"><span>📢</span> Daily Schedule </a></li>
         <li><a href="#"><span>📝</span> Assignments</a></li>
         <li><a href="#"><span>📊</span> Attendance</a></li>
-       <li><a href="result_page.html"><span>📈</span> Results</a></li>
+       <li><a href="Result_page.html"><span>📈</span> Results</a></li>
         <li><a href="#"><span>🚪</span> Logout</a></li>
       </ul>
     </aside>
@@ -344,7 +344,7 @@
       <section class="stats-cards">
         <div class="stat-card">
           <h3>Total Courses</h3>
-          <div class="number">6</div>
+          <div class="number" id="courseCount">...</div>
           <div class="subtitle">This Semester</div>
         </div>
         <div class="stat-card">
@@ -465,5 +465,40 @@
       </section>
     </main>
   </div>
+  <script>
+    // Show batch info in welcome message if available
+    const batchId = sessionStorage.getItem('batchId');
+    const semester = sessionStorage.getItem('semester');
+    const welcomeHeader = document.querySelector('header h1');
+    if (batchId) {
+      // Format batchId as 22-23 if it's 2223
+      let batchDisplay = batchId;
+      if (/^\d{4}$/.test(batchId)) {
+        batchDisplay = batchId.slice(0,2) + '-' + batchId.slice(2);
+      }
+      welcomeHeader.textContent = `Welcome Learners (Batch ${batchDisplay})`;
+    } else {
+      welcomeHeader.textContent = 'Welcome Learner';
+    }
+
+    // Fetch and show batch session and semester from backend
+    if (batchId) {
+      fetch(`/api/batch_info?id=${batchId}`)
+        .then(res => res.json())
+        .then(function(data) {
+          if (data.success) {
+            document.querySelector('header p').textContent = `Session: ${data.session} | Semester: ${data.sem_No} | BSc in Computer Science & Engineering`;
+            // Fetch course count for this semester
+            fetch(`/api/course_count?sem_No=${data.sem_No}`)
+              .then(res => res.json())
+              .then(function(courseData) {
+                if (courseData.success) {
+                  document.getElementById('courseCount').textContent = courseData.count;
+                }
+              });
+          }
+        });
+    }
+  </script>
 </body>
 </html>
