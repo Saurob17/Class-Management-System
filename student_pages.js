@@ -33,4 +33,22 @@ module.exports = function(app, con) {
       res.json({ success: true, courses: result });
     });
   });
+
+  // API endpoint to get marks for a course, session, and semester
+  app.get('/api/marks', (req, res) => {
+    const { courseCode, session, sem_No } = req.query;
+    if (!courseCode || !session || !sem_No) {
+      return res.json({ success: false, message: 'Missing parameters' });
+    }
+    // Assuming table Student_Internal_Marks with columns: Roll, Attend, Mid_1, Mid_2, Assign_Mark, Course_Code, session, sem_No
+    con.query(
+      'SELECT Roll, Attend, Mid_1, Mid_2, Assign_Mark FROM Student_Internal_Marks WHERE Course_Code = ? AND session = ? AND sem_No = ?',
+      [courseCode, session, sem_No],
+      (err, result) => {
+        if (err) return res.json({ success: false, message: 'DB error' });
+        res.json({ success: true, marks: result });
+      }
+    );
+  });
+  
 };

@@ -2,16 +2,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+
 const con = require('./server');
 
 const teacher_page = require('./teachers_pass_veri');
-const batch_page = require('./batch_login');  // ✅ ব্যাচ লজিক ফাইল ইমপোর্ট
+const batch_page = require('./batch_login');  // ব্যাচ লজিক ফাইল ইমপোর্ট
 const student_pages = require('./student_pages'); // Student API endpoints
 
-const app = express();
+const app = express();//Express application object
 
 // 👉 EJS Setup
 app.set('view engine', 'ejs');
+//ডিফল্টভাবে Express ধরে নেয় আপনার EJS ফাইলগুলো views নামক ফোল্ডারে আছে।
 app.set('views', path.join(__dirname, 'views'));
 
 
@@ -26,7 +28,7 @@ con.connect(err => {
     console.error('DB connection failed:', err);
     process.exit(1);
   }
-  console.log('✅ DB Connected');
+  console.log('DB Connected');
 });
 
 // Home route
@@ -34,9 +36,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
 });
 
+
 // Route handler modules
 teacher_page(app, con);
-batch_page(app, con);  // ✅ ব্যাচ লগইন রাউট যুক্ত
+batch_page(app, con);  // ব্যাচ লগইন রাউট যুক্ত
 student_pages(app, con); // Register student API endpoints
 
 const PORT = 700;
