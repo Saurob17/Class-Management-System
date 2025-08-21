@@ -8,6 +8,7 @@ const con = require('./server');
 const teacher_page = require('./teachers_pass_veri');
 const batch_page = require('./batch_login');  // ব্যাচ লজিক ফাইল ইমপোর্ট
 const student_pages = require('./student_pages'); // Student API endpoints
+const student_cource_backend = require('./student_cource_backend'); // Student course API endpoints
 
 const app = express();//Express application object
 
@@ -41,6 +42,7 @@ app.get('/', (req, res) => {
 teacher_page(app, con);
 batch_page(app, con);  // ব্যাচ লগইন রাউট যুক্ত
 student_pages(app, con); // Register student API endpoints
+student_cource_backend(app, con); // Register student course API endpoints
 
 const PORT = 700;
 app.listen(PORT, () => {

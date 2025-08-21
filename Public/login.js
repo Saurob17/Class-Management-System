@@ -70,5 +70,5 @@ document.getElementById('teacherLoginForm').addEventListener('submit', handleTea
 // Student login fetch-based handler
 const studentLoginForm = document.getElementById('studentLoginForm');
 if (studentLoginForm) {
-  studentLoginlForm.addEventListener('submit', handleStudentLogin);
+  studentLoginForm.addEventListener('submit', handleStudentLogin);
 }
