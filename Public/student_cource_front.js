@@ -10,6 +10,7 @@ if (window.location.pathname.endsWith('batch_cource.html')) {
     courseList.innerHTML = '<div>No semester selected. Please login/select batch first.</div>';
   } 
   
+  
   else {
 
     console.log("📌 Fetching courses for semester:", sem_No);

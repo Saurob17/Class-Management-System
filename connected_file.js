@@ -10,6 +10,12 @@ const batch_page = require('./batch_login');  // ব্যাচ লজিক �
 const student_pages = require('./student_pages'); // Student API endpoints
 const student_cource_backend = require('./student_cource_backend'); // Student course API endpoints
 
+// 👉 Teacher API
+const teacherCourses = require('./Teachers_cources_backend');
+
+
+
+// ...existing code...
 const app = express();//Express application object
 
 // 👉 EJS Setup
@@ -43,6 +49,7 @@ teacher_page(app, con);
 batch_page(app, con);  // ব্যাচ লগইন রাউট যুক্ত
 student_pages(app, con); // Register student API endpoints
 student_cource_backend(app, con); // Register student course API endpoints
+teachersCourses(app, con);
 
 const PORT = 700;
 app.listen(PORT, () => {
