@@ -1,4 +1,4 @@
-//connected_file.js
+// connected_file.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -6,50 +6,44 @@ const path = require('path');
 const con = require('./server');
 
 const teacher_page = require('./teachers_pass_veri');
-const batch_page = require('./batch_login');  // ব্যাচ লজিক ফাইল ইমপোর্ট
-const student_pages = require('./student_pages'); // Student API endpoints
-const student_cource_backend = require('./student_cource_backend'); // Student course API endpoints
+const batch_page = require('./batch_login');
+const student_pages = require('./student_pages');
+const student_cource_backend = require('./student_cource_backend');
+const teacherCourses = require('./Teachers_cources_backend'); // ✅ ঠিক নাম
 
-// 👉 Teacher API
-const teacherCourses = require('./Teachers_cources_backend');
+const app = express();
 
-
-
-// ...existing code...
-const app = express();//Express application object
-
-// 👉 EJS Setup
+// EJS Setup
 app.set('view engine', 'ejs');
-//ডিফল্টভাবে Express ধরে নেয় আপনার EJS ফাইলগুলো views নামক ফোল্ডারে আছে।
 app.set('views', path.join(__dirname, 'views'));
 
-
-// Static Public Folder
-app.use(express.static(path.join(__dirname, 'Public')));
+// Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Database connect
+// 👉 API Routes আগে register করতে হবে
+teacher_page(app, con);
+batch_page(app, con);
+student_pages(app, con);
+student_cource_backend(app, con);
+teacherCourses(app, con);   // ✅ এখানে ঠিক নাম ব্যবহার
+
+// 👉 Static files পরে
+app.use(express.static(path.join(__dirname, 'Public')));
+
+// DB connect
 con.connect(err => {
   if (err) {
     console.error('DB connection failed:', err);
     process.exit(1);
   }
-  console.log('DB Connected');
+  console.log('✅ DB Connected');
 });
 
 // Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
 });
-
-
-// Route handler modules
-teacher_page(app, con);
-batch_page(app, con);  // ব্যাচ লগইন রাউট যুক্ত
-student_pages(app, con); // Register student API endpoints
-student_cource_backend(app, con); // Register student course API endpoints
-teachersCourses(app, con);
 
 const PORT = 700;
 app.listen(PORT, () => {
