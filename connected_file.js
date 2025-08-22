@@ -10,8 +10,12 @@ const batch_page = require('./batch_login');
 const student_pages = require('./student_pages');
 const student_cource_backend = require('./student_cource_backend');
 const teacherCourses = require('./Teachers_cources_backend'); // ✅ ঠিক নাম
+const teacherPageBackend = require('./Teacher_page_backedn');  
+const dailyScheduleBackend = require('./daily_shidule_backend');
+
 
 const app = express();
+
 
 // EJS Setup
 app.set('view engine', 'ejs');
@@ -27,6 +31,10 @@ batch_page(app, con);
 student_pages(app, con);
 student_cource_backend(app, con);
 teacherCourses(app, con);   // ✅ এখানে ঠিক নাম ব্যবহার
+teacherPageBackend(app, con); 
+dailyScheduleBackend(app, con); 
+
+
 
 // 👉 Static files পরে
 app.use(express.static(path.join(__dirname, 'Public')));

@@ -494,14 +494,14 @@
           </div>
         </div>
 
-        <div class="dashboard-grid">
-          <div class="stats-section">
-            <div class="stat-card">
-              <div class="stat-icon">📚</div>
-              <h3>Total Courses</h3>
-              <div class="number">4</div>
-              <div class="subtitle">Active This Semester</div>
-            </div>
+     <!-- ...existing code... -->
+<div class="stat-card">
+  <div class="stat-icon">📚</div>
+  <h3>Total Courses</h3>
+  <div class="number" id="totalCoursesCount">0</div> <!-- Add id here -->
+  <div class="subtitle">Active This Semester</div>
+</div>
+<!-- ...existing code... -->
             
             <div class="stat-card">
               <div class="stat-icon">📝</div>
@@ -606,32 +606,104 @@
       </main>
     </div>
 
-    <script>
-      // Get teacher data from localStorage
-      const teacherId = localStorage.getItem('teacherId');
-      const teacherName = localStorage.getItem('teacherName');
 
-      // Update welcome message with teacher name from sessionStorage
-      document.addEventListener('DOMContentLoaded', function() {
-        
-        const teacherName = sessionStorage.getItem('teacherName');
-        const welcomeHeader = document.querySelector('.welcome-section h1');
-        if (teacherName && welcomeHeader) {
-          welcomeHeader.textContent = `Welcome ${teacherName}`;
-        } else if (welcomeHeader) {
-          welcomeHeader.textContent = 'Good Morning, Teacher';
-        }
-      });
-      
-      // Add logout functionality
-      document.querySelector('a[href="#"]:last-child').addEventListener('click', (e) => {
-        e.preventDefault();
-        // Clear teacher data from localStorage
-        localStorage.removeItem('teacherId');
-        localStorage.removeItem('teacherName');
-        // Redirect to login page
-        window.location.href = '/';
-      });
+
+
+
+
+
+
+
+<!-- Popup Modal -->
+<div id="assignmentPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+    background:#fff; padding:20px; border:1px solid #333; z-index:1000;">
+  <h3>New Assignment</h3>
+  <label>Course Code: <input type="text" id="assignCourseCode"></label><br><br>
+  <label>Course Name: <input type="text" id="assignCourseName"></label><br><br>
+  <label>Deadline: <input type="date" id="assignDeadline"></label><br><br>
+  <label>Session: <input type="text" id="assignSession"></label><br><br>
+  <label>Topic: <input type="text" id="assignTopic"></label><br><br>
+  <button id="submitAssignment">Submit</button>
+  <button id="closePopup">Close</button>
+</div>
+
+<!-- Optional overlay -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500;"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  // Array to store assignments
+let assignments = [];
+
+// Elements
+const assignmentBtn = document.querySelector('.action-btn');
+const popup = document.getElementById('assignmentPopup');
+const overlay = document.getElementById('overlay');
+const closeBtn = document.getElementById('closePopup');
+const submitBtn = document.getElementById('submitAssignment');
+
+// Show popup
+assignmentBtn.addEventListener('click', () => {
+  popup.style.display = 'block';
+  overlay.style.display = 'block';
+});
+
+// Close popup
+closeBtn.addEventListener('click', () => {
+  popup.style.display = 'none';
+  overlay.style.display = 'none';
+});
+
+// Submit assignment
+submitBtn.addEventListener('click', () => {
+  const courseCode = document.getElementById('assignCourseCode').value.trim();
+  const courseName = document.getElementById('assignCourseName').value.trim();
+  const deadline = document.getElementById('assignDeadline').value;
+  const session = document.getElementById('assignSession').value.trim();
+  const topic = document.getElementById('assignTopic').value.trim();
+
+  if (!courseCode || !courseName || !deadline || !session || !topic) {
+    alert("All fields are required!");
+    return;
+  }
+
+  // Create object
+  const newAssignment = { courseCode, courseName, deadline, session, topic };
+
+  // Push to array
+  assignments.push(newAssignment);
+
+  // Show in console
+  console.log("Assignments Array:", assignments);
+
+  // Clear form
+  document.getElementById('assignCourseCode').value = '';
+  document.getElementById('assignCourseName').value = '';
+  document.getElementById('assignDeadline').value = '';
+  document.getElementById('assignSession').value = '';
+  document.getElementById('assignTopic').value = '';
+
+  // Close popup
+  popup.style.display = 'none';
+  overlay.style.display = 'none';
+});
+
+</script>
+
+
+
+    <script  src="teachers_pages_front.js"></script> 
     </script>
   </body>
 </html>
