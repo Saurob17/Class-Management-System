@@ -141,39 +141,18 @@
     <!-- Internal Result Panel -->
     <div id="panel-internal" class="panel">
       <h2>Internal Result</h2>
+      <select id="subjectSelect"></select>
       <table>
         <thead>
           <tr>
             <th>Student Roll</th>
-            <th>Attendance Mark</th>
+            <th>Attendance</th>
             <th>Mid-1</th>
             <th>Mid-2</th>
-            <th>Assignment Mark</th>
+            <th>Assignment</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>23102001</td>
-            <td>18</td>
-            <td>85</td>
-            <td>88</td>
-            <td>17</td>
-          </tr>
-          <tr>
-            <td>23102002</td>
-            <td>20</td>
-            <td>79</td>
-            <td>81</td>
-            <td>16</td>
-          </tr>
-          <tr>
-            <td>23102003</td>
-            <td>19</td>
-            <td>90</td>
-            <td>92</td>
-            <td>18</td>
-          </tr>
-        </tbody>
+        <tbody id="internalResultBody"></tbody>
       </table>
     </div>
 
@@ -187,22 +166,12 @@
             <th>CGPA</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>23102001</td>
-            <td>3.85</td>
-          </tr>
-          <tr>
-            <td>23102002</td>
-            <td>3.70</td>
-          </tr>
-          <tr>
-            <td>23102003</td>
-            <td>3.90</td>
-          </tr>
-        </tbody>
+        <tbody id="externalResultBody"></tbody>
       </table>
     </div>
   </div>
+
+  <!-- External JS file -->
+  <script src="Result_JS_code.js"></script>
 </body>
 </html>
