@@ -5,319 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Dashboard</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* ======= General styles ======= */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background: linear-gradient(to right, #edc9a8, #5679c5); min-height:100vh; overflow-x:hidden; }
+    .container { display:flex; min-height:100vh; position:relative; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #edc9a8, #5679c5);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .container {
-      display: flex;
-      min-height: 100vh;
-      position: relative;
-    }
-
+    /* ======= Sidebar ======= */
     .sidebar {
-      background: rgba(47, 62, 70, 0.9);
+      background: rgba(47,62,70,0.9);
       backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-      width: 280px;
-      padding: 30px 25px;
-      transition: all 0.3s ease;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+      border-right:1px solid rgba(255,255,255,0.3);
+      color:#fff; width:280px; padding:30px 25px; transition:0.3s;
+      box-shadow:4px 0 20px rgba(0,0,0,0.2);
     }
-
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 40px;
-      font-size: 26px;
-      font-weight: 700;
+    .sidebar h2 { text-align:center; margin-bottom:40px; font-size:26px; font-weight:700;
       background: linear-gradient(45deg, #ffd89b, #19547b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
+    .sidebar ul { list-style:none; }
+    .sidebar ul li { margin:20px 0; border-radius:12px; transition:0.3s; }
+    .sidebar ul li:hover { background:rgba(255,255,255,0.1); transform:translateX(5px); }
+    .sidebar ul li a { color:#fff; text-decoration:none; font-weight:500; display:flex; align-items:center; padding:15px 20px; border-radius:12px; transition:0.3s; font-size:16px; }
+    .sidebar ul li a span { margin-right:15px; font-size:20px; }
+    .sidebar ul li a:hover { color:#ffd89b; }
 
-    .sidebar ul {
-      list-style: none;
-    }
+    /* ======= Main content ======= */
+    .main-content { flex:1; padding:40px; background:rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    header { margin-bottom:40px; text-align:center; }
+    header h1 { font-size:36px; margin-bottom:10px; color:#fff; font-weight:700; text-shadow:2px 2px 4px rgba(0,0,0,0.3); }
+    header p { color:rgba(255,255,255,0.8); margin-bottom:30px; font-size:18px; font-weight:400; }
 
-    .sidebar ul li {
-      margin: 20px 0;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar ul li:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(5px);
-    }
-
-    .sidebar ul li a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      padding: 15px 20px;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-      font-size: 16px;
-    }
-
-    .sidebar ul li a span {
-      margin-right: 15px;
-      font-size: 20px;
-    }
-
-    .sidebar ul li a:hover {
-      color: #ffd89b;
-    }
-
-    .main-content {
-      flex: 1;
-      padding: 40px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-    }
-
-    header {
-      margin-bottom: 40px;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-      color: #fff;
-      font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    header p {
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 30px;
-      font-size: 18px;
-      font-weight: 400;
-    }
-
-    .stats-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-
+    /* ======= Stats cards ======= */
+    .stats-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; margin-bottom:40px; }
     .stat-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      padding: 30px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); padding:30px; border-radius:20px;
+      border:1px solid rgba(255,255,255,0.2); transition:0.3s; position:relative; overflow:hidden;
     }
-
     .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      background-size: 400% 400%;
-      animation: gradientShift 3s ease infinite;
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg,#ff6b6b,#4ecdc4,#45b7d1,#96ceb4); background-size:400% 400%; animation: gradientShift 3s ease infinite;
     }
+    @keyframes gradientShift {0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+    .stat-card:hover { transform:translateY(-10px); box-shadow:0 20px 40px rgba(0,0,0,0.2);}
+    .stat-card h3 { color:rgba(255,255,255,0.9); margin-bottom:15px; font-size:16px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+    .stat-card .number { font-size:36px; font-weight:800; color:#fff; margin-bottom:10px; text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+    .stat-card .subtitle { color:rgba(255,255,255,0.7); font-size:14px; }
 
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
+    /* ======= Routine Section ======= */
+    .routine-section { background: rgba(255,255,255,0.1); backdrop-filter:blur(20px); padding:35px; border-radius:20px; border:1px solid rgba(255,255,255,0.2); box-shadow:0 10px 30px rgba(0,0,0,0.1); }
+    .routine-section h2 { margin-bottom:25px; color:#fff; font-size:24px; font-weight:700; display:flex; align-items:center; }
+    .routine-section h2 span { margin-right:15px; font-size:28px; }
+    .routine-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
 
-    .stat-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    }
+    .day-schedule { background: rgba(255,255,255,0.1); border-radius:15px; padding:25px; border:1px solid rgba(255,255,255,0.15); transition:0.3s;}
+    .day-schedule:hover { transform:translateY(-5px); background: rgba(255,255,255,0.15);}
+    .day-title { font-size:18px; font-weight:700; color:white; margin-bottom:20px; text-align:center; text-transform:uppercase; letter-spacing:1px;}
+    .class-item { background: rgba(255,255,255,0.1); border-radius:10px; padding:15px; margin-bottom:15px; border-left:4px solid #4ecdc4; transition:0.3s; }
+    .class-item:hover { background: rgba(255,255,255,0.15); transform:translateX(5px);}
+    .class-item:last-child { margin-bottom:0; }
+    .class-time { font-size:18px; color:#004d33; font-weight:600; margin-bottom:5px;}
+    .class-subject { font-size:16px; color:#fff; font-weight:600; margin-bottom:3px;}
+    .class-room { font-size:12px; color:rgba(255,255,255,0.7);}
+    .today-indicator { border-left-color:#ff6b6b !important; box-shadow:0 0 20px rgba(255,107,107,0.3);}
+    .today-indicator .day-title { color:#ff6b6b;}
 
-    .stat-card h3 {
-      color: rgba(255, 255, 255, 0.9);
-      margin-bottom: 15px;
-      font-size: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .stat-card .number {
-      font-size: 36px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .stat-card .subtitle {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 14px;
-    }
-
-    .routine-section {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      padding: 35px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .routine-section h2 {
-      margin-bottom: 25px;
-      color: #fff;
-      font-size: 24px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-    }
-
-    .routine-section h2 span {
-      margin-right: 15px;
-      font-size: 28px;
-    }
-
-    .routine-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .day-schedule {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      padding: 25px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      transition: all 0.3s ease;
-    }
-
-    .day-schedule:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .day-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: white;
-      margin-bottom: 20px;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .class-item {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-left: 4px solid #4ecdc4;
-      transition: all 0.3s ease;
-    }
-
-    .class-item:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateX(5px);
-    }
-
-    .class-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .class-time {
-      font-size: 18px;
-      color:	#004d33;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .class-subject {
-      font-size: 16px;
-      color: #fff;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .class-room {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .today-indicator {
-      border-left-color: #ff6b6b !important;
-      box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
-    }
-
-    .today-indicator .day-title {
-      color: #ff6b6b;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        padding: 20px;
-      }
-
-      .main-content {
-        padding: 20px;
-      }
-
-      header h1 {
-        font-size: 28px;
-      }
-
-      .stats-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .routine-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .sidebar h2 {
-        font-size: 22px;
-      }
-
-      .sidebar ul li a {
-        font-size: 14px;
-        padding: 12px 15px;
-      }
-
-      .sidebar ul li a span {
-        font-size: 18px;
-      }
-
-      header h1 {
-        font-size: 24px;
-      }
-
-      .stat-card .number {
-        font-size: 28px;
-      }
-    }
+    /* ======= Responsive ======= */
+    @media(max-width:768px) { .container{flex-direction:column;} .sidebar{width:100%;padding:20px;} .main-content{padding:20px;} header h1{font-size:28px;} .stats-cards{grid-template-columns:1fr;} .routine-grid{grid-template-columns:1fr;} }
+    @media(max-width:480px) { .sidebar h2{font-size:22px;} .sidebar ul li a{font-size:14px; padding:12px 15px;} .sidebar ul li a span{font-size:18px;} header h1{font-size:24px;} .stat-card .number{font-size:28px;} }
   </style>
 </head>
 <body>
@@ -330,7 +84,7 @@
         <li><a href="daily_shidule.html"><span>📢</span> Daily Schedule </a></li>
         <li><a href="#"><span>📝</span> Assignments</a></li>
         <li><a href="#"><span>📊</span> Attendance</a></li>
-       <li><a href="Result_page.html"><span>📈</span> Results</a></li>
+        <li><a href="Result_page.html"><span>📈</span> Results</a></li>
         <li><a href="#"><span>🚪</span> Logout</a></li>
       </ul>
     </aside>
@@ -366,105 +120,74 @@
 
       <section class="routine-section">
         <h2><span>📅</span> Weekly Class Routine</h2>
-        <div class="routine-grid">
-          <div class="day-schedule">
-            <div class="day-title">Sunday</div>
-            <div class="class-item">
-              <div class="class-time">9:00 AM - 10:30 AM</div>
-              <div class="class-subject">CSE210 - Data Structures</div>
-              <div class="class-room">Room 305</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">11:00 AM - 12:30 PM</div>
-              <div class="class-subject">MAT101 - Mathematics</div>
-              <div class="class-room">Room 201</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">2:30 PM - 4:00 PM</div>
-              <div class="class-subject">ENG105 - English</div>
-              <div class="class-room">Room 108</div>
-            </div>
-          </div>
-
-          <div class="day-schedule today-indicator">
-            <div class="day-title">Monday</div>
-            <div class="class-item">
-              <div class="class-time">10:00 AM - 11:30 AM</div>
-              <div class="class-subject">CSE220 - Algorithms</div>
-              <div class="class-room">Room 310</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">1:00 PM - 2:30 PM</div>
-              <div class="class-subject">PHY101 - Physics</div>
-              <div class="class-room">Lab 205</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">3:30 PM - 5:00 PM</div>
-              <div class="class-subject">CSE210 Lab</div>
-              <div class="class-room">Computer Lab 1</div>
-            </div>
-          </div>
-
-          <div class="day-schedule">
-            <div class="day-title">Tuesday</div>
-            <div class="class-item">
-              <div class="class-time">9:30 AM - 11:00 AM</div>
-              <div class="class-subject">MAT101 - Mathematics</div>
-              <div class="class-room">Room 201</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">11:30 AM - 1:00 PM</div>
-              <div class="class-subject">ENG105 - English</div>
-              <div class="class-room">Room 108</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">2:00 PM - 3:30 PM</div>
-              <div class="class-subject">CSE101 - Programming</div>
-              <div class="class-room">Room 405</div>
-            </div>
-          </div>
-
-          <div class="day-schedule">
-            <div class="day-title">Wednesday</div>
-            <div class="class-item">
-              <div class="class-time">10:00 AM - 11:30 AM</div>
-              <div class="class-subject">CSE220 - Algorithms</div>
-              <div class="class-room">Room 310</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">12:00 PM - 1:30 PM</div>
-              <div class="class-subject">PHY101 Lab</div>
-              <div class="class-room">Physics Lab</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">3:00 PM - 4:30 PM</div>
-              <div class="class-subject">MAT101 Tutorial</div>
-              <div class="class-room">Room 150</div>
-            </div>
-          </div>
-
-          <div class="day-schedule">
-            <div class="day-title">Thursday</div>
-            <div class="class-item">
-              <div class="class-time">9:00 AM - 10:30 AM</div>
-              <div class="class-subject">CSE210 - Data Structures</div>
-              <div class="class-room">Room 305</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">11:00 AM - 12:30 PM</div>
-              <div class="class-subject">CSE101 Lab</div>
-              <div class="class-room">Computer Lab 2</div>
-            </div>
-            <div class="class-item">
-              <div class="class-time">2:30 PM - 4:00 PM</div>
-              <div class="class-subject">ENG105 - English</div>
-              <div class="class-room">Room 108</div>
-            </div>
-          </div>
+        <div class="routine-grid" id="routineGrid">
+          <!-- Dynamic weekly routine -->
         </div>
       </section>
     </main>
   </div>
+
+  <!-- ...existing code... -->
+<script>
+  // Week starts from Sunday
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const routineGrid = document.getElementById('routineGrid');
+  const session = sessionStorage.getItem("session");
+  const sem_No = sessionStorage.getItem("sem_No");
+
+  function loadWeeklyRoutine(){
+    routineGrid.innerHTML = '';
+    days.forEach(day=>{
+      fetch(`/api/daily_schedule?day=${encodeURIComponent(day)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
+        .then(res=>res.json())
+        .then(data=>{
+          if(data.success && Array.isArray(data.schedule) && data.schedule.length>0){
+            renderDaySchedule(day,data.schedule);
+          } else { renderEmptyDay(day); }
+        }).catch(err=>{ console.error(err); renderErrorDay(day); });
+    });
+  }
+
+  function renderDaySchedule(day,schedule){
+    const dayDiv = document.createElement('div');
+    dayDiv.className='day-schedule';
+    // Highlight today (JS: 0=Sunday, 1=Monday, ...)
+    const todayIndex = new Date().getDay();
+    if(day===days[todayIndex]) dayDiv.classList.add('today-indicator');
+
+    let innerHTML=`<div class="day-title">${day}</div>`;
+    schedule.forEach(item=>{
+      innerHTML+=`
+        <div class="class-item">
+          <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
+          <div class="class-subject">${item.Course_Code} - ${item.teacher_name}</div>
+          <div class="class-room">${item.Class_Room}</div>
+        </div>
+      `;
+    });
+    dayDiv.innerHTML=innerHTML;
+    routineGrid.appendChild(dayDiv);
+  }
+
+  function renderEmptyDay(day){
+    const dayDiv = document.createElement('div');
+    dayDiv.className='day-schedule';
+    dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">No classes scheduled.</div>`;
+    routineGrid.appendChild(dayDiv);
+  }
+
+  function renderErrorDay(day){
+    const dayDiv = document.createElement('div');
+    dayDiv.className='day-schedule';
+    dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">Error loading schedule.</div>`;
+    routineGrid.appendChild(dayDiv);
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{ loadWeeklyRoutine(); });
+</script>
+
+
+
   <script>
     // Show batch info in welcome message if available
     const batchId = sessionStorage.getItem('batchId');
@@ -500,5 +223,6 @@
         });
     }
   </script>
+<!-- ...existing code... -->
 </body>
 </html>

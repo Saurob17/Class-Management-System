@@ -1,29 +1,29 @@
+// daily_schedule.js (backend)
 module.exports = (app, con) => {
   app.get('/api/daily_schedule', (req, res) => {
-    const day = req.query.day;
+    const { day, session, sem_No } = req.query;
 
-    console.log("📌 Fetching schedule for day_here:", day);
+    console.log("📌 Fetching schedu99le for:", day, session, sem_No);
 
-    if (!day) {
-      return res.json({ success: false, message: "Day is required" });
+    if (!day || !session || !sem_No) {
+      return res.json({ success: false, message: "Day, Session, and sem_No are required" });
     }
 
-    con.query(
-      "SELECT * FROM Daily_Schedule WHERE Day = ? ORDER BY Start_Time",
-      [day],
-      (err, result) => {
-        if (err) {
-          console.error("❌ DB Error:", err);
-          return res.json({ success: false, message: "Database error" });
-        }
+    const sql = `
+      SELECT * 
+      FROM Daily_Schedule 
+      WHERE Day = ? AND Session = ? AND sem_No = ?
+      ORDER BY Start_Time
+    `;
 
-        console.log("response data_> ", result);
-
-        res.json({
-          success: true,
-          schedule: result
-        });
+    con.query(sql, [day, session, sem_No], (err, result) => {
+      if (err) {
+        console.error("❌ DB Error:", err);
+        return res.json({ success: false, message: "Database error" });
       }
-    );
+      console.log("📌 Schedule fetch8ed:", result);
+
+      res.json({ success: true, schedule: result });
+    });
   });
 };

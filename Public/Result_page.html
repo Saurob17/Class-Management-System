@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -56,8 +56,7 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    #tab-internal:checked ~ .tabs label[for="tab-internal"],
-    #tab-external:checked ~ .tabs label[for="tab-external"] {
+    #tab-internal:checked ~ .tabs label[for="tab-internal"] {
       background: linear-gradient(145deg, #f0d5b8, #6a8bd4);
       font-weight: 600;
       color: #2c3e50;
@@ -73,47 +72,8 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    #tab-internal:checked ~ #panel-internal,
-    #tab-external:checked ~ #panel-external {
+    #tab-internal:checked ~ #panel-internal {
       display: block;
-    }
-    /* -------- Course List & Detail -------- */
-    .course-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      list-style: none;
-      margin-top: 12px;
-      margin-bottom: 24px;
-    }
-    .course-list button {
-      background: linear-gradient(145deg, #e6d3c1, #7393d3);
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    }
-    .course-list button:hover,
-    .course-list button.active {
-      background: linear-gradient(145deg, #d4b89a, #4a6bb3);
-      transform: translateY(-1px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    .course-detail {
-      display: none;
-    }
-    .course-detail.active {
-      display: block;
-    }
-    .course-detail h3 {
-      color: #2c3e50;
-      margin-bottom: 16px;
-      font-size: 1.3rem;
     }
     /* -------- Table Styles -------- */
     table {
@@ -160,45 +120,29 @@
         padding: 24px;
       }
     }
-
-    /* -------- Subject Dropdown Styles -------- */
-    .subject-select {
-      margin-bottom: 24px;
-      font-size: 1rem;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      max-width: 300px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Student Result Portal</h1>
 
-    <!-- Radio buttons control the active panel -->
+   
     <input type="radio" name="tabs" id="tab-internal" checked />
-    <input type="radio" name="tabs" id="tab-external" />
 
-    <!-- Navigation -->
     <div class="tabs">
-      <label for="tab-internal">Internal Result</label>
-      <label for="tab-external">External Result</label>
+      <label for="tab-internal">Internal Resul44t</label>
     </div>
 
     <!-- Internal Result Panel -->
     <div id="panel-internal" class="panel">
       <h2>Internal Result</h2>
 
-      <!-- Subject Selector -->
-      <select id="subjectSelect" class="subject-select" aria-label="Select Subject">
-        <!-- Options will be added by JavaScript -->
-      </select>
+      <select id="subjectSelect"></select>
 
       <table>
         <thead>
           <tr>
-            <th>Student Roll</th>
+            <th>Student 6Roll</th>
             <th>Attendance Mark</th>
             <th>Mid-1</th>
             <th>Mid-2</th>
@@ -206,25 +150,9 @@
           </tr>
         </thead>
         <tbody id="internalResultBody">
-          <!-- Data rows inserted by JavaScript -->
-        </tbody>
-      </table>
-    </div>
-
-    <!-- External Result Panel -->
-    <div id="panel-external" class="panel">
-      <h2>External Result</h2>
-      <table>
-        <thead>
           <tr>
-            <th>Student Roll</th>
-            <th>CGPA</th>
+            <td colspan="5">Loading...</td>
           </tr>
-        </thead>
-        <tbody>
-          <tr><td>23102001</td><td>3.85</td></tr>
-          <tr><td>23102002</td><td>3.70</td></tr>
-          <tr><td>23102003</td><td>3.90</td></tr>
         </tbody>
       </table>
     </div>
@@ -232,4 +160,4 @@
 
   <script src="Result_JS_code.js"></script>
 </body>
-</html>
+</html> 

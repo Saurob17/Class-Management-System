@@ -1,14 +1,16 @@
-//daily_shidule_front.js
+// daily_schedule_front.js
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const dayTabs = document.getElementById('dayTabs');
 const scheduleContainer = document.getElementById('scheduleContainer');
 const currentDayElem = document.getElementById('currentDay');
 
+// batch/session info
+const session = sessionStorage.getItem("session");
+const sem_No = sessionStorage.getItem("sem_No");
+
 function createDayTabs() {
-    
   dayTabs.innerHTML = '';
-  console.log(`📌 Fetching schedule for1: ${days}`);
   days.forEach(day => {
     const btn = document.createElement('button');
     btn.className = 'day-tab';
@@ -17,32 +19,26 @@ function createDayTabs() {
     dayTabs.appendChild(btn);
   });
 }
-function loadScheduleData(selectedDay) {
-    currentDayElem.textContent = selectedDay;
-    console.log(`📌 Fetching schedul2e for3: ${selectedDay}`);
 
+function loadScheduleData(selectedDay) {
+  currentDayElem.textContent = selectedDay;
   scheduleContainer.innerHTML = `<div class="loading"><h3>Loading schedule data...</h3></div>`;
 
-  console.log(`📌 Fetching schedul2e for: ${selectedDay}`);
-  fetch(`/api/daily_schedule?day=${encodeURIComponent(selectedDay)}`)
+  fetch(`/api/daily_schedule?day=${encodeURIComponent(selectedDay)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
     .then(res => res.json())
     .then(data => {
-        console.log("response from backend:", data);
       if (data.success && Array.isArray(data.schedule) && data.schedule.length > 0) {
-        console.log(`📌 Fetching schedule for3: ${selectedDay}`);
         renderSchedule(data.schedule, selectedDay);
       } else {
         scheduleContainer.innerHTML = `<div class="no-classes">No classes scheduled for ${selectedDay}.</div>`;
       }
     })
     .catch(() => {
-  console.log(`📌 Fetching schedule for9: ${selectedDay}`);
       scheduleContainer.innerHTML = `<div class="error">Error loading schedule. Try again later.</div>`;
     });
 }
 
-function renderSchedule(schedule, day) {    
-
+function renderSchedule(schedule, day) {
   let html = `<div class="schedule-content active"><h2>${day} Schedule</h2>`;
   schedule.forEach(item => {
     html += `
@@ -59,7 +55,6 @@ function renderSchedule(schedule, day) {
   scheduleContainer.innerHTML = html;
 }
 
-// Initialize tabs and load today's schedule
 document.addEventListener('DOMContentLoaded', () => {
   createDayTabs();
   const today = days[new Date().getDay()];

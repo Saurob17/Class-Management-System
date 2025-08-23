@@ -1,709 +1,637 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teacher Dashboard - MyClass</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Dashboard - MyClass</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .sidebar {
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      width: 300px;
+      padding: 30px 25px;
+      transition: all 0.3s ease;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(45deg, #ffd89b, #19547b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-header .role {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin: 15px 0;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+
+    .sidebar ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+
+    .sidebar ul li a span {
+      margin-right: 15px;
+      font-size: 18px;
+      width: 20px;
+    }
+
+    .sidebar ul li a:hover {
+      color: #ffd89b;
+    }
+
+    .sidebar ul li.active {
+      background: rgba(255, 216, 155, 0.2);
+    }
+
+    .sidebar ul li.active a {
+      color: #ffd89b;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      padding: 20px 30px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .welcome-section h1 {
+      font-size: 32px;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .welcome-section p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 400% 400%;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes gradientShift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
       }
 
-      body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        overflow-x: hidden;
+      50% {
+        background-position: 100% 50%;
       }
+    }
 
-      .container {
-        display: flex;
-        min-height: 100vh;
-        position: relative;
-      }
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
 
-      .sidebar {
-        background: rgba(30, 41, 59, 0.95);
-        backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        width: 300px;
-        padding: 30px 25px;
-        transition: all 0.3s ease;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-      }
+    .stat-card .stat-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
 
-      .sidebar-header {
-        text-align: center;
-        margin-bottom: 40px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
+    .stat-card h3 {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-      .sidebar-header h2 {
-        font-size: 28px;
-        font-weight: 700;
-        background: linear-gradient(45deg, #ffd89b, #19547b);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 5px;
-      }
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
 
-      .sidebar-header .role {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.7);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
+    .stat-card .subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+    }
 
-      .sidebar ul {
-        list-style: none;
-      }
+    .quick-actions {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-      .sidebar ul li {
-        margin: 15px 0;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-      }
+    .quick-actions h3 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 700;
+    }
 
-      .sidebar ul li:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateX(5px);
-      }
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
 
-      .sidebar ul li a {
-        color: #ffffff;
-        text-decoration: none;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        font-size: 15px;
-      }
+    .quick-action-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
 
-      .sidebar ul li a span {
-        margin-right: 15px;
-        font-size: 18px;
-        width: 20px;
-      }
+    .quick-action-btn span {
+      margin-right: 12px;
+      font-size: 16px;
+    }
 
-      .sidebar ul li a:hover {
-        color: #ffd89b;
-      }
+    .content-sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
 
-      .sidebar ul li.active {
-        background: rgba(255, 216, 155, 0.2);
-      }
+    .section-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
 
-      .sidebar ul li.active a {
-        color: #ffd89b;
-      }
+    .section-card h2 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
 
-      .main-content {
-        flex: 1;
-        padding: 30px;
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(10px);
-      }
+    .section-card h2 span {
+      margin-right: 12px;
+      font-size: 22px;
+    }
 
-      .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        padding: 20px 30px;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
+    .class-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-      .welcome-section h1 {
-        font-size: 32px;
-        color: #fff;
-        font-weight: 700;
-        margin-bottom: 5px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      }
+    .class-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid #4ecdc4;
+      transition: all 0.3s ease;
+    }
 
-      .welcome-section p {
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 16px;
-      }
+    .class-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(5px);
+    }
 
-      .top-actions {
-        display: flex;
-        gap: 15px;
-      }
+    .class-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
 
-      .action-btn {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+    .class-name {
+      font-size: 16px;
+      color: #fff;
+      font-weight: 600;
+      flex: 1;
+    }
 
-      .action-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-      }
+    .class-time {
+      font-size: 12px;
+      color: #4ecdc4;
+      font-weight: 600;
+    }
 
+    .class-details {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .notice-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-left: 4px solid #ff6b6b;
+      transition: all 0.3s ease;
+    }
+
+    .notice-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .notice-title {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .notice-date {
+      font-size: 11px;
+      color: #ff6b6b;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .notice-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    .today-highlight {
+      border-left-color: #ffd89b !important;
+      box-shadow: 0 0 15px rgba(255, 216, 155, 0.3);
+    }
+
+    .today-highlight .class-time {
+      color: #ffd89b;
+    }
+
+    @media (max-width: 1024px) {
       .dashboard-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 25px;
-        margin-bottom: 30px;
-      }
-
-      .stats-section {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-      }
-
-      .stat-card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px);
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .stat-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-        background-size: 400% 400%;
-        animation: gradientShift 3s ease infinite;
-      }
-
-      @keyframes gradientShift {
-        0%,
-        100% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-      }
-
-      .stat-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      }
-
-      .stat-card .stat-icon {
-        font-size: 24px;
-        margin-bottom: 10px;
-      }
-
-      .stat-card h3 {
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .stat-card .number {
-        font-size: 32px;
-        font-weight: 800;
-        color: #fff;
-        margin-bottom: 5px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      .stat-card .subtitle {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 12px;
-      }
-
-      .quick-actions {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .quick-actions h3 {
-        color: #fff;
-        margin-bottom: 20px;
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .quick-action-btn {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 15px 20px;
-        border-radius: 12px;
-        margin-bottom: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-      }
-
-      .quick-action-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateX(5px);
-      }
-
-      .quick-action-btn span {
-        margin-right: 12px;
-        font-size: 16px;
+        grid-template-columns: 1fr;
       }
 
       .content-sections {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 25px;
+        grid-template-columns: 1fr;
       }
+    }
 
-      .section-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        padding: 30px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      }
-
-      .section-card h2 {
-        color: #fff;
-        margin-bottom: 20px;
-        font-size: 20px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-      }
-
-      .section-card h2 span {
-        margin-right: 12px;
-        font-size: 22px;
-      }
-
-      .class-list {
-        display: flex;
+    @media (max-width: 768px) {
+      .container {
         flex-direction: column;
-        gap: 12px;
       }
 
-      .class-item {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 15px;
-        border-left: 4px solid #4ecdc4;
-        transition: all 0.3s ease;
+      .sidebar {
+        width: 100%;
+        padding: 20px;
       }
 
-      .class-item:hover {
-        background: rgba(255, 255, 255, 0.15);
-        transform: translateX(5px);
+      .main-content {
+        padding: 20px;
       }
 
-      .class-header {
-        display: flex;
-        justify-content: between;
-        align-items: center;
-        margin-bottom: 8px;
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
       }
 
-      .class-name {
-        font-size: 16px;
-        color: #fff;
-        font-weight: 600;
-        flex: 1;
+      .top-actions {
+        justify-content: center;
       }
 
-      .class-time {
-        font-size: 12px;
-        color: #4ecdc4;
-        font-weight: 600;
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-section {
+        grid-template-columns: 1fr;
       }
 
-      .class-details {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.7);
+      .welcome-section h1 {
+        font-size: 24px;
       }
 
-      .notice-item {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 12px;
-        border-left: 4px solid #ff6b6b;
-        transition: all 0.3s ease;
+      .stat-card .number {
+        font-size: 24px;
       }
+    }
+  </style>
+</head>
 
-      .notice-item:hover {
-        background: rgba(255, 255, 255, 0.15);
-      }
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>🎓 MyClass</h2>
+        <div class="role">Teacher Portal</div>
+      </div>
+      <ul>
+        <li class="active">
+          <a href="#"><span>🏠</span> Dashboard</a>
+        </li>
+        <li><a href="teachers_cources.html"><span>📚</span> My Courses</a></li>
+        <li>
+          <a href="#"><span>📝</span> Assignments</a>
+        </li>
+        <li>
+          <a href="#"><span>📊</span> Attendance</a>
+        </li>
+        <li>
+          <a href="#"><span>📈</span> Gradebook</a>
+        </li>
+        <li>
+          <a href="#"><span>📋</span> Lesson Plans</a>
+        </li>
+        <li>
+          <a href="Teacher_daily_shidule.html"><span>📅</span> Schedule</a>
+        </li>
+        <li>
+          <a href="#"><span>🚪</span> Logout</a>
+        </li>
+      </ul>
+    </aside>
 
-      .notice-title {
-        font-size: 14px;
-        color: #fff;
-        font-weight: 600;
-        margin-bottom: 5px;
-      }
-
-      .notice-date {
-        font-size: 11px;
-        color: #ff6b6b;
-        font-weight: 600;
-        margin-bottom: 8px;
-      }
-
-      .notice-text {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.8);
-        line-height: 1.4;
-      }
-
-      .today-highlight {
-        border-left-color: #ffd89b !important;
-        box-shadow: 0 0 15px rgba(255, 216, 155, 0.3);
-      }
-
-      .today-highlight .class-time {
-        color: #ffd89b;
-      }
-
-      @media (max-width: 1024px) {
-        .dashboard-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .content-sections {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          flex-direction: column;
-        }
-
-        .sidebar {
-          width: 100%;
-          padding: 20px;
-        }
-
-        .main-content {
-          padding: 20px;
-        }
-
-        .top-bar {
-          flex-direction: column;
-          gap: 15px;
-          text-align: center;
-        }
-
-        .top-actions {
-          justify-content: center;
-        }
-
-        .stats-section {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (max-width: 480px) {
-        .stats-section {
-          grid-template-columns: 1fr;
-        }
-
-        .welcome-section h1 {
-          font-size: 24px;
-        }
-
-        .stat-card .number {
-          font-size: 24px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <h2>🎓 MyClass</h2>
-          <div class="role">Teacher Portal</div>
+    <main class="main-content">
+      <div class="top-bar">
+        <div class="welcome-section">
+          <h1>Good Morning, Dr. Sarah Ahmed</h1>
+          <p>Computer Science Department | Spring 2025</p>
         </div>
-        <ul>
-          <li class="active">
-            <a href="#"><span>🏠</span> Dashboard</a>
-          </li>
-          <li><a href="teachers_cources.html"><span>📚</span> My Courses</a></li>
-          <li>
-            <a href="#"><span>📝</span> Assignments</a>
-          </li>
-          <li>
-            <a href="#"><span>📊</span> Attendance</a>
-          </li>
-          <li>
-            <a href="#"><span>📈</span> Gradebook</a>
-          </li>
-          <li>
-            <a href="#"><span>📋</span> Lesson Plans</a>
-          </li>
-          <li>
-            <a href="#"><span>📅</span> Schedule</a>
-          </li>
-          <li>
-            <a href="#"><span>🚪</span> Logout</a>
-          </li>
-        </ul>
-      </aside>
+        <div class="top-actions">
+          <button class="action-btn"><span>➕</span> New Assignment</button>
+          <button class="action-btn"><span>📢</span> Announce</button>
+          <button class="action-btn"><span>📊</span> Take Attendance</button>
+        </div>
+      </div>
 
-      <main class="main-content">
-        <div class="top-bar">
-          <div class="welcome-section">
-            <h1>Good Morning, Dr. Sarah Ahmed</h1>
-            <p>Computer Science Department | Spring 2025</p>
+      <!-- ...existing code... -->
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <h3>Total Courses</h3>
+        <div class="number" id="totalCoursesCount">0</div> <!-- Add id here -->
+        <div class="subtitle">Active This Semester</div>
+      </div>
+      <!-- ...existing code... -->
+
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <h3>Pending Grades</h3>
+        <div class="number">23</div>
+        <div class="subtitle">Assignments to Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <h3>Class Average</h3>
+        <div class="number">87%</div>
+        <div class="subtitle">Overall Performance</div>
+      </div>
+  </div>
+  <div class="quick-actions">
+    <h3>⚡ Quick Actions</h3>
+    <a href="#" class="quick-action-btn">
+      <span>✏️</span> Create Assignment
+    </a>
+    <a href="#" class="quick-action-btn">
+      <span>📊</span> View Gradebook
+    </a>
+
+    <a href="Teacher_daily_shidule.html" class="quick-action-btn">
+      <span>📅</span> Schedule hClass
+    </a>
+
+    <a href="#" class="quick-action-btn">
+      <span>💬</span> Send Message
+    </a>
+  </div>
+  </div>
+
+  <div class="content-sections">
+    <div class="section-card">
+      <h2><span>🕒</span> Today's Classes</h2>
+      <div class="class-list">
+        <div class="class-item today-highlight">
+          <div class="class-header">
+            <div class="class-name">CSE210 - Data Structures</div>
+            <div class="class-time">9:00 AM</div>
           </div>
-          <div class="top-actions">
-            <button class="action-btn"><span>➕</span> New Assignment</button>
-            <button class="action-btn"><span>📢</span> Announce</button>
-            <button class="action-btn"><span>📊</span> Take Attendance</button>
+          <div class="class-details">
+            Room 305 • 45 Students • Current Class
           </div>
         </div>
-
-     <!-- ...existing code... -->
-<div class="stat-card">
-  <div class="stat-icon">📚</div>
-  <h3>Total Courses</h3>
-  <div class="number" id="totalCoursesCount">0</div> <!-- Add id here -->
-  <div class="subtitle">Active This Semester</div>
-</div>
-<!-- ...existing code... -->
-            
-            <div class="stat-card">
-              <div class="stat-icon">📝</div>
-              <h3>Pending Grades</h3>
-              <div class="number">23</div>
-              <div class="subtitle">Assignments to Review</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">📊</div>
-              <h3>Class Average</h3>
-              <div class="number">87%</div>
-              <div class="subtitle">Overall Performance</div>
-            </div>
+        <div class="class-item">
+          <div class="class-header">
+            <div class="class-name">CSE220 - Algorithms</div>
+            <div class="class-time">11:30 AM</div>
           </div>
-
-          <div class="quick-actions">
-            <h3>⚡ Quick Actions</h3>
-            <a href="#" class="quick-action-btn">
-              <span>✏️</span> Create Assignment
-            </a>
-            <a href="#" class="quick-action-btn">
-              <span>📊</span> View Gradebook
-            </a>
-
-            <a href="#" class="quick-action-btn">
-              <span>📅</span> Schedule Class
-            </a>
-
-            <a href="#" class="quick-action-btn">
-              <span>💬</span> Send Message
-            </a>
-          </div>
+          <div class="class-details">Room 3109 • 38 Students</div>
         </div>
-
-        <div class="content-sections">
-          <div class="section-card">
-            <h2><span>🕒</span> Today's Classes</h2>
-            <div class="class-list">
-              <div class="class-item today-highlight">
-                <div class="class-header">
-                  <div class="class-name">CSE210 - Data Structures</div>
-                  <div class="class-time">9:00 AM</div>
-                </div>
-                <div class="class-details">
-                  Room 305 • 45 Students • Current Class
-                </div>
-              </div>
-              <div class="class-item">
-                <div class="class-header">
-                  <div class="class-name">CSE220 - Algorithms</div>
-                  <div class="class-time">11:30 AM</div>
-                </div>
-                <div class="class-details">Room 310 • 38 Students</div>
-              </div>
-              <div class="class-item">
-                <div class="class-header">
-                  <div class="class-name">CSE101 - Programming Lab</div>
-                  <div class="class-time">2:30 PM</div>
-                </div>
-                <div class="class-details">Computer Lab 1 • 25 Students</div>
-              </div>
-              <div class="class-item">
-                <div class="class-header">
-                  <div class="class-name">CSE350 - Software Engineering</div>
-                  <div class="class-time">4:00 PM</div>
-                </div>
-                <div class="class-details">Room 405 • 32 Students</div>
-              </div>
-            </div>
+        <div class="class-item">
+          <div class="class-header">
+            <div class="class-name">CSE101 - Programming Lab</div>
+            <div class="class-time">2:30 PM</div>
           </div>
-
-          <div class="section-card">
-            <h2><span>📢</span> Recent Notices</h2>
-            <div class="notices-list">
-              <div class="notice-item">
-                <div class="notice-title">Mid-term Exam Schedule Released</div>
-                <div class="notice-date">June 28, 2025</div>
-                <div class="notice-text">
-                  Mid-term examinations will be held from July 15-22. Please
-                  check the detailed schedule.
-                </div>
-              </div>
-              <div class="notice-item">
-                <div class="notice-title">Next Meeting</div>
-                <div class="notice-date">June 27, 2025</div>
-                <div class="notice-text">
-                  Department meeting scheduled at 10:00 AM in Conference Room A.
-                </div>
-            
-              </div>
-              <div class="notice-item">
-                <div class="notice-title">Summer Break Schedule</div>
-                <div class="notice-date">June 24, 2025</div>
-                <div class="notice-text">
-                  Summer break will start from August 1st. Please submit all
-                  grades before July 30th.
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="class-details">Computer Lab 1 • 25 Students</div>
         </div>
-      </main>
+        <div class="class-item">
+          <div class="class-header">
+            <div class="class-name">CSE350 - Software Engineering</div>
+            <div class="class-time">4:00 PM</div>
+          </div>
+          <div class="class-details">Room 405 • 32 Students</div>
+        </div>
+      </div>
     </div>
 
+    <div class="section-card">
+      <h2><span>📢</span> Recent Notices</h2>
+      <div class="notices-list">
+        <div class="notice-item">
+          <div class="notice-title">Mid-term Exam Schedule Released</div>
+          <div class="notice-date">June 28, 2025</div>
+          <div class="notice-text">
+            Mid-term examinations will be held from July 15-22. Please
+            check the detailed schedule.
+          </div>
+        </div>
+        <div class="notice-item">
+          <div class="notice-title">Next Meeting</div>
+          <div class="notice-date">June 27, 2025</div>
+          <div class="notice-text">
+            Department meeting scheduled at 10:00 AM in Conference Room A.
+          </div>
 
+        </div>
+        <div class="notice-item">
+          <div class="notice-title">Summer Break Schedule</div>
+          <div class="notice-date">June 24, 2025</div>
+          <div class="notice-text">
+            Summer break will start from August 1st. Please submit all
+            grades before July 30th.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </main>
+  </div>
 
-
-
-
-
-
-
-<!-- Popup Modal -->
-<div id="assignmentPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+  <!-- Popup Modal -->
+  <div id="assignmentPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
     background:#fff; padding:20px; border:1px solid #333; z-index:1000;">
-  <h3>New Assignment</h3>
-  <label>Course Code: <input type="text" id="assignCourseCode"></label><br><br>
-  <label>Course Name: <input type="text" id="assignCourseName"></label><br><br>
-  <label>Deadline: <input type="date" id="assignDeadline"></label><br><br>
-  <label>Session: <input type="text" id="assignSession"></label><br><br>
-  <label>Topic: <input type="text" id="assignTopic"></label><br><br>
-  <button id="submitAssignment">Submit</button>
-  <button id="closePopup">Close</button>
-</div>
-
-<!-- Optional overlay -->
-<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500;"></div>
+    <h3>New Assignment</h3>
+    <label>Course Code: <input type="text" id="assignCourseCode"></label><br><br>
+    <label>Course Name: <input type="text" id="assignCourseName"></label><br><br>
+    <label>Deadline: <input type="date" id="assignDeadline"></label><br><br>
+    <label>Session: <input type="text" id="assignSession"></label><br><br>
+    <label>Topic: <input type="text" id="assignTopic"></label><br><br>
+    <button id="submitAssignment">Submit</button>
+    <button id="closePopup">Close</button>
+  </div>
 
 
+  <!-- Optional overlay -->
+  <div id="overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500;">
+  </div>
 
 
+  <script src="teacher_assignment.js"></script>
+  <script src="teachers_pages_front.js"></script>
 
+</body>
 
-
-
-
-
-
-
-
-<script>
-  // Array to store assignments
-let assignments = [];
-
-// Elements
-const assignmentBtn = document.querySelector('.action-btn');
-const popup = document.getElementById('assignmentPopup');
-const overlay = document.getElementById('overlay');
-const closeBtn = document.getElementById('closePopup');
-const submitBtn = document.getElementById('submitAssignment');
-
-// Show popup
-assignmentBtn.addEventListener('click', () => {
-  popup.style.display = 'block';
-  overlay.style.display = 'block';
-});
-
-// Close popup
-closeBtn.addEventListener('click', () => {
-  popup.style.display = 'none';
-  overlay.style.display = 'none';
-});
-
-// Submit assignment
-submitBtn.addEventListener('click', () => {
-  const courseCode = document.getElementById('assignCourseCode').value.trim();
-  const courseName = document.getElementById('assignCourseName').value.trim();
-  const deadline = document.getElementById('assignDeadline').value;
-  const session = document.getElementById('assignSession').value.trim();
-  const topic = document.getElementById('assignTopic').value.trim();
-
-  if (!courseCode || !courseName || !deadline || !session || !topic) {
-    alert("All fields are required!");
-    return;
-  }
-
-  // Create object
-  const newAssignment = { courseCode, courseName, deadline, session, topic };
-
-  // Push to array
-  assignments.push(newAssignment);
-
-  // Show in console
-  console.log("Assignments Array:", assignments);
-
-  // Clear form
-  document.getElementById('assignCourseCode').value = '';
-  document.getElementById('assignCourseName').value = '';
-  document.getElementById('assignDeadline').value = '';
-  document.getElementById('assignSession').value = '';
-  document.getElementById('assignTopic').value = '';
-
-  // Close popup
-  popup.style.display = 'none';
-  overlay.style.display = 'none';
-});
-
-</script>
-
-
-
-    <script  src="teachers_pages_front.js"></script> 
-    </script>
-  </body>
 </html>

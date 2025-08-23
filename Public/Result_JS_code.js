@@ -1,16 +1,19 @@
-// Result_JS_code.js
+// =======================
+// Student Result Frontend
+// =======================
 
-// Get sessionStorage data
+// Batch, Semester, Session info from sessionStorage
 const batchId = sessionStorage.getItem('batchId');
-let semester = sessionStorage.getItem('semester');
+let semester = sessionStorage.getItem('sem_No');
 let session = sessionStorage.getItem('session');
 
 // DOM elements
 const internalResultBody = document.getElementById('internalResultBody');
-const externalResultBody = document.getElementById('externalResultBody');
 const subjectSelect = document.getElementById('subjectSelect');
 
-// Get batch info to set semester/session
+// =======================
+// Fetch Batch Info
+// =======================
 async function getBatchInfo() {
   if (!batchId) return;
   try {
@@ -19,121 +22,111 @@ async function getBatchInfo() {
     if (data.success) {
       semester = semester || data.sem_No;
       session = session || data.session;
-      sessionStorage.setItem('semester', semester);
+      sessionStorage.setItem('sem_No', semester);
       sessionStorage.setItem('session', session);
     }
   } catch (err) {
-    console.error("Batch info fetch error:", err);
+    console.error("❌ Batch info fetch failed:", err);
   }
 }
 
-// Fetch courses for the semester
+// =======================
+// Fetch Courses
+// =======================
 async function fetchCourses() {
   if (!semester) return [];
   try {
     const res = await fetch(`/api/courses?sem_No=${semester}`);
     const data = await res.json();
-    return data.success ? data.courses : [];
+    if (!data.success || !Array.isArray(data.courses)) return [];
+    return data.courses;
   } catch (err) {
-    console.error("Courses fetch error:", err);
+    console.error("❌ Courses fetch failed:", err);
     return [];
   }
 }
 
-// Fetch internal results for a course
-async function fetchInternal(courseCode) {
+// =======================
+// Fetch Internal Marks
+// =======================
+async function fetchMarks(courseCode) {
+  if (!session) return [];
   try {
-    const res = await fetch(`/api/internal_results?courseCode=${courseCode}&session=${session}&sem_No=${semester}`);
+    const res = await fetch(`/api/marks?courseCode=${courseCode}&session=${session}`);
     const data = await res.json();
-    return data.success ? data.internal : [];
+    console.log(`✅ Marks data fetched:`, data.marks);
+    if (!data.success || !Array.isArray(data.marks)) {
+      console.log('⚠️ No marks data');
+      return [];
+    }
+    return data.marks;
   } catch (err) {
-    console.error("Internal result fetch error:", err);
+    console.error("❌ Marks fetch failed:", err);
     return [];
   }
 }
 
-// Fetch external results for the batch
-async function fetchExternal() {
-  try {
-    const res = await fetch(`/api/external_results?session=${session}&sem_No=${semester}`);
-    const data = await res.json();
-    return data.success ? data.external : [];
-  } catch (err) {
-    console.error("External result fetch error:", err);
-    return [];
-  }
-}
-
-// Render internal results table
-async function renderInternal(courseCode) {
-  internalResultBody.innerHTML = '';
-  const rows = await fetchInternal(courseCode);
-  if (rows.length === 0) {
-    internalResultBody.innerHTML = `<tr><td colspan="4">No internal result found.</td></tr>`;
-    return;
-  }
-  rows.forEach(r => {
-    internalResultBody.innerHTML += `
-      <tr>
-        <td>${r.Roll}</td>
-        <td>${r.Mid_1 ?? ''}</td>
-        <td>${r.Mid_2 ?? ''}</td>
-        <td>${r.Assign_Mark ?? ''}</td>
-      </tr>
-    `;
-  });
-}
-
-// Render external results table
-async function renderExternal() {
-  externalResultBody.innerHTML = '';
-  const rows = await fetchExternal();
-  if (rows.length === 0) {
-    externalResultBody.innerHTML = `<tr><td colspan="2">No external result found.</td></tr>`;
-    return;
-  }
-  rows.forEach(r => {
-    externalResultBody.innerHTML += `
-      <tr>
-        <td>${r.Roll}</td>
-        <td>${r.Sem_CGPA ?? ''}</td>
-      </tr>
-    `;
-  });
-}
-
-// Setup initial results and populate subject select
-async function setupResults() {
+// =======================
+// Setup Internal Results
+// =======================
+async function setupInternalResults() {
   await getBatchInfo();
+  subjectSelect.innerHTML = '';
+  internalResultBody.innerHTML = '';
 
   const courses = await fetchCourses();
-  subjectSelect.innerHTML = '';
   if (courses.length === 0) {
     subjectSelect.innerHTML = '<option>No subjects found</option>';
     return;
   }
 
+  // Populate dropdown
   for (const course of courses) {
     const option = document.createElement('option');
     option.value = course.Course_Code;
-    option.textContent = course.Course_Name || course.Course_Code;
+    option.textContent = course.Course_Name;
     subjectSelect.appendChild(option);
   }
 
-  // Render first course internal result by default
+  // Render first subject by default
   if (subjectSelect.options.length > 0) {
     subjectSelect.selectedIndex = 0;
-    renderInternal(subjectSelect.value);
+    renderInternalResults(subjectSelect.value);
   }
-
-  // Render external results
-  renderExternal();
 }
 
-// Change event for course selection
+// =======================
+// Render Internal Results Table
+// =======================
+async function renderInternalResults(courseCode) {
+  internalResultBody.innerHTML = '';
+  const marks = await fetchMarks(courseCode);
+
+  if (marks.length === 0) {
+    internalResultBody.innerHTML = '<tr><td colspan="5">No marks found for this subject.</td></tr>';
+    return;
+  }
+
+  for (const rec of marks) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${rec.Roll}</td>
+      <td>${rec.Attend ?? ''}</td>
+      <td>${rec.Mid_1 ?? ''}</td>
+      <td>${rec.Mid_2 ?? ''}</td>
+      <td>${rec.Assign_Mark ?? ''}</td>
+    `;
+    internalResultBody.appendChild(tr);
+  }
+}
+
+// =======================
+// Event Listeners
+// =======================
 subjectSelect.addEventListener('change', e => {
-  renderInternal(e.target.value);
+  renderInternalResults(e.target.value);
 });
 
-// Initialize after DOM loaded
-window.addEventListener('DOMContentLoaded', setupResults);
+window.addEventListener('DOMContentLoaded', () => {
+  setupInternalResults();
+});
