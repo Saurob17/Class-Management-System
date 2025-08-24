@@ -15,6 +15,8 @@ const dailyScheduleBackend = require('./daily_shidule_backend');
 const resultBackend = require('./result_backend');
 const teacherAssignmentBackend = require('./teacher_assignment_backend');
 const teacherDailyShiBackend = require('./teacher_dailyShi_backend'); 
+//student_assignment_backend.js
+const studentAssignmentBackend = require('./student_assignment_backend');
 
 // -----------------
 // App initialization
@@ -40,6 +42,7 @@ dailyScheduleBackend(app, con);
 resultBackend(app, con);
 teacherAssignmentBackend(app, con);
 teacherDailyShiBackend(app, con);
+studentAssignmentBackend(app, con);
 
 // -----------------
 // Static files

@@ -22,18 +22,21 @@ app.post('/api/assignments', async (req, res) => {
 });
 
 
+app.get("/api/assignments", (req, res) => {
+  const teacherId = req.query.teacherId;  // query string থেকে Teacher_Id নিলাম
 
-  // সব Assignment লোড করা
-  app.get("/api/assignments", (req, res) => {
-    con.query("SELECT * FROM Course_Assignments ORDER BY deadline", (err, rows) => {
+  con.query(
+    "SELECT * FROM Course_Assignments WHERE Teacher_Id = ? ORDER BY deadline",
+    [teacherId],
+    (err, rows) => {
       if (err) {
         console.error("DB Fetch Error:", err);
         return res.json({ success: false, message: "DB Error" });
       }
       res.json({ success: true, assignments: rows });
-    });
-  });
-
+    }
+  );
+});
   // Assignment ডিলিট করা (course_code + session + deadline দিয়ে identify)
   app.delete("/api/assignments", (req, res) => {
     const { course_code, session, deadline } = req.body;
@@ -48,7 +51,7 @@ app.post('/api/assignments', async (req, res) => {
       "DELETE FROM Course_Assignments WHERE course_code = ? AND session = ? AND deadline = ?",
       [course_code, session, deadline],
       (err, result) => {
-        
+
         if (err) {
           console.error("DB Delete Error:", err);
           return res.json({ success: false, message: "DB Error" });
