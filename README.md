@@ -18,15 +18,56 @@ A web-based application for managing classes, attendance, assignments, schedules
 ```
 Class-Management-System/
 │
-├── attendance_backend.js
-├── batch_login.js
-├── Connect_Result.js
-├── connected_file.js
-├── daily_shidule_backend.js
-├── result_backend.js
-├── server.js
-├── Stu_Assignment.js
+
+# Class Management System
+
 ├── student_assignment_backend.js
+
+---
+
+## Features
+
+- **User Authentication:** Secure login for students and teachers
+- **Attendance Management:** Track and manage student attendance
+- **Assignment Management:** Create, submit, and review assignments
+- **Schedule Management:** View and manage daily class schedules
+- **Course Management:** Assign and manage courses
+- **Result Management:** Enter and view student results
+- **Resource Sharing:** Upload and share class resources
+- **Role-Based Pages:** Dedicated dashboards for students and teachers
+
+---
+
+## Project Structure
+
+```
+Class-Management-System/
+│
+├── backend/
+│   ├── config/           # Database connection (MariaDB)
+│   ├── controllers/      # Business logic for each feature
+│   ├── models/           # Data models (for reference)
+│   ├── routes/           # API endpoints
+│   ├── services/         # Service layer for DB operations
+│   ├── utils/            # Helpers and validators
+│   └── package.json      # Backend dependencies
+│
+├── frontend/
+│   ├── *.html            # UI pages for all features
+│   └── *.js              # Frontend logic and API calls
+│
+└── README.md
+```
+
+---
+
+## Backend
+
+- Node.js + Express server
+- MariaDB (via XAMPP) for persistent storage
+- Modular MVC structure: controllers, services, routes, utils
+- RESTful API endpoints for all features
+
 ├── student_cource_backend.js
 ├── student_pages.js
 ├── teacher_assignment_backend.js
@@ -78,6 +119,46 @@ Class-Management-System/
 
 ## Getting Started
 
+
+## Frontend
+
+- HTML pages for login, attendance, assignments, schedules, resources, results, and dashboards
+- JavaScript files for dynamic UI and API integration
+
+---
+
+## Getting Started
+
+1. **Install dependencies:**
+	```powershell
+	npm install
+	```
+
+2. **Configure Database:**
+	- Start XAMPP and ensure MariaDB is running
+	- Update `backend/config/db.js` with your DB credentials if needed
+
+3. **Run the server:**
+	```powershell
+	node server.js
+	```
+
+4. **Access the app:**
+	- Open your browser and go to `http://localhost:3000` (or your configured port)
+
+---
+
+## Customization
+
+- Modify backend files for business logic
+- Update frontend HTML/JS for UI changes
+- Add new features by creating new controllers, services, and routes
+
+---
+
+## License
+
+This project is for educational purposes only.
 1. **Install dependencies:**
 	```powershell
 	npm install
