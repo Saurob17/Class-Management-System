@@ -10,4 +10,6 @@ const con = mysql.createConnection({
   database: 'Department'
 });
 
+// Entry point for backend server
+require('./app');
 module.exports = con;
