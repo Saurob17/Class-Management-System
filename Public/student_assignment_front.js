@@ -3,9 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Get student session from sessionStorage
   const studentSession = sessionStorage.getItem("session"); 
-  console.log("Student session:", studentSession); // optional log
   if (!studentSession) {
-    assignmentContainer.innerHTML = "<p>Session not found. Please log in.</p>";
+    assignmentContainer.innerHTML = "<div class='no-assignments'>Session not found. Please log in.</div>";
     return;
   }
 
@@ -13,22 +12,23 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch(`/api/student_assignment?session=${encodeURIComponent(studentSession)}`)
     .then(res => res.json())
     .then(data => {
-      console.log("Fetched assignments:", data); // optional log
       if (!data.success) {
-        assignmentContainer.innerHTML = `<p>Error loading assignments: ${data.message}</p>`;
+        assignmentContainer.innerHTML = `<div class='no-assignments'>Error loading assignments: ${data.message}</div>`;
         return;
       }
 
       if (data.assignments.length === 0) {
-        assignmentContainer.innerHTML = "<p>No assignments for your session.</p>";
+        assignmentContainer.innerHTML = "<div class='no-assignments'>No assignments for your session.</div>";
         return;
       }
 
-      assignmentContainer.innerHTML = "";
+      // Grid container
+      assignmentContainer.innerHTML = `<div class="assignments-grid"></div>`;
+      const grid = assignmentContainer.querySelector(".assignments-grid");
 
       data.assignments.forEach(task => {
         const div = document.createElement("div");
-        div.className = "task-card";
+        div.className = "assignment-card";
 
         const formattedDeadline = new Date(task.deadline);
         const yyyy = formattedDeadline.getFullYear();
@@ -37,19 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const deadlineStr = `${yyyy}-${mm}-${dd}`;
 
         div.innerHTML = `
-          <h3>${task.course_name} (${task.course_code})</h3>
-          <p><b>Teacher ID:</b> ${task.Teacher_Id}</p>
-          <p><b>Session:</b> ${task.session}</p>
-          <p><b>Topic:</b> ${task.topic}</p>
-          <p><b>Deadline:</b> ${deadlineStr}</p>
-          <div class="countdown" id="countdown-${task.id}">⏳ Calculating...</div>
+          <div class="pill">${task.course_code}</div>
+          <div class="course-name">${task.course_name}</div>
+          <div class="topic">${task.topic}</div>
+          <div class="row"><b>Teacher:</b> ${task.Teacher_Id}</div>
+          <div class="row"><b>Session:</b> ${task.session}</div>
+          <div class="row"><b>Deadline:</b> ${deadlineStr}</div>
+          <div class="row countdown" id="countdown-${task.id}">⏳ Calculating...</div>
         `;
 
-        assignmentContainer.appendChild(div);
+        grid.appendChild(div);
 
+        // countdown function
         const countdownEl = div.querySelector(`#countdown-${task.id}`);
         const deadlineTime = new Date(task.deadline).getTime();
-        setInterval(() => {
+
+        function updateCountdown() {
           const now = new Date().getTime();
           const distance = deadlineTime - now;
 
@@ -62,7 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
           const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           countdownEl.innerText = `⏳ ${days}d ${hours}h ${minutes}m left`;
-        }, 60000);
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
       });
+    })
+    .catch(err => {
+      assignmentContainer.innerHTML = "<div class='no-assignments'>Error fetching assignments.</div>";
+      console.error(err);
     });
 });
