@@ -1,47 +1,61 @@
-// controllers/scheduleController.js
-const db = require('../config/db');
+const pool = require('../config/db');
 
-exports.getDailySchedule = (req, res) => {
-  const { day, session, sem_No } = req.query;
-  if (!day || !session || !sem_No) {
-    return res.status(400).json({ success: false, message: "Day, Session, and sem_No are required" });
-  }
-  const sql = `
-    SELECT * 
-    FROM Daily_Schedule 
-    WHERE Day = ? AND Session = ? AND sem_No = ?
-    ORDER BY Start_Time
-  `;
-  db.query(sql, [day, session, sem_No], (err, result) => {
-    if (err) {
-      console.error("DB Error:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-    res.json({ success: true, schedule: result });
-  });
+exports.getAllSchedules = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const rows = await conn.query('SELECT * FROM schedules');
+		conn.release();
+		res.json(rows);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };
 
-exports.getNextClass = (req, res) => {
-  const { session, sem_No, day, currentTime } = req.query;
-  if (!session || !sem_No || !day || !currentTime) {
-    return res.status(400).json({ success: false, message: "Missing required parameters" });
-  }
-  const sql = `
-    SELECT * 
-    FROM Daily_Schedule
-    WHERE Session = ? AND sem_No = ? AND Day = ? AND Start_Time > ?
-    ORDER BY Start_Time ASC
-    LIMIT 1
-  `;
-  db.query(sql, [session, sem_No, day, currentTime], (err, result) => {
-    if (err) {
-      console.error("DB Error:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-    if (result.length > 0) {
-      res.json({ success: true, nextClass: result[0] });
-    } else {
-      res.json({ success: false, message: "No next class found" });
-    }
-  });
+exports.getScheduleById = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const rows = await conn.query('SELECT * FROM schedules WHERE id = ?', [req.params.id]);
+		conn.release();
+		if (rows.length === 0) return res.status(404).json({ error: 'Schedule not found' });
+		res.json(rows[0]);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
+
+exports.createSchedule = async (req, res) => {
+	try {
+		const { courseId, teacherId, date, time } = req.body;
+		const conn = await pool.getConnection();
+		const result = await conn.query('INSERT INTO schedules (courseId, teacherId, date, time) VALUES (?, ?, ?, ?)', [courseId, teacherId, date, time]);
+		conn.release();
+		res.status(201).json({ id: result.insertId, courseId, teacherId, date, time });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
+
+exports.updateSchedule = async (req, res) => {
+	try {
+		const { courseId, teacherId, date, time } = req.body;
+		const conn = await pool.getConnection();
+		const result = await conn.query('UPDATE schedules SET courseId = ?, teacherId = ?, date = ?, time = ? WHERE id = ?', [courseId, teacherId, date, time, req.params.id]);
+		conn.release();
+		if (result.affectedRows === 0) return res.status(404).json({ error: 'Schedule not found' });
+		res.json({ id: req.params.id, courseId, teacherId, date, time });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
+
+exports.deleteSchedule = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const result = await conn.query('DELETE FROM schedules WHERE id = ?', [req.params.id]);
+		conn.release();
+		if (result.affectedRows === 0) return res.status(404).json({ error: 'Schedule not found' });
+		res.json({ message: 'Schedule deleted' });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };

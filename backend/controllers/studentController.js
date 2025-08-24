@@ -1,48 +1,61 @@
-// controllers/studentController.js
-const db = require('../config/db');
+const pool = require('../config/db');
 
-exports.getBatchInfo = (req, res) => {
-  const batchId = req.query.id;
-  if (!batchId) return res.status(400).json({ success: false, message: 'No batch id provided' });
-  db.query('SELECT session, sem_No FROM Batch_Log_Info WHERE id = ?', [batchId], (err, result) => {
-    if (err) return res.status(500).json({ success: false, message: 'DB error' });
-    if (result.length > 0) {
-      res.json({ success: true, session: result[0].session, sem_No: result[0].sem_No });
-    } else {
-      res.status(404).json({ success: false, message: 'Batch not found' });
-    }
-  });
+exports.getAllStudents = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const rows = await conn.query('SELECT * FROM students');
+		conn.release();
+		res.json(rows);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };
 
-exports.getCourseCount = (req, res) => {
-  const semNo = req.query.sem_No;
-  if (!semNo) return res.status(400).json({ success: false, message: 'No semester provided' });
-  db.query('SELECT COUNT(*) AS count FROM Course_Info WHERE sem_No = ?', [semNo], (err, result) => {
-    if (err) return res.status(500).json({ success: false, message: 'DB error' });
-    res.json({ success: true, count: result[0].count });
-  });
+exports.getStudentById = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const rows = await conn.query('SELECT * FROM students WHERE id = ?', [req.params.id]);
+		conn.release();
+		if (rows.length === 0) return res.status(404).json({ error: 'Student not found' });
+		res.json(rows[0]);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };
 
-exports.getCourses = (req, res) => {
-  const semNo = req.query.sem_No;
-  if (!semNo) return res.status(400).json({ success: false, message: 'No semester provided' });
-  db.query('SELECT Course_Code, Course_Name FROM Course_Info WHERE sem_No = ?', [semNo], (err, result) => {
-    if (err) return res.status(500).json({ success: false, message: 'DB error' });
-    res.json({ success: true, courses: result });
-  });
+exports.createStudent = async (req, res) => {
+	try {
+		const { name, email, password } = req.body;
+		const conn = await pool.getConnection();
+		const result = await conn.query('INSERT INTO students (name, email, password) VALUES (?, ?, ?)', [name, email, password]);
+		conn.release();
+		res.status(201).json({ id: result.insertId, name, email });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };
 
-exports.getMarks = (req, res) => {
-  const { courseCode, session, sem_No } = req.query;
-  if (!courseCode || !session || !sem_No) {
-    return res.status(400).json({ success: false, message: 'Missing parameters' });
-  }
-  db.query(
-    'SELECT Roll, Attend, Mid_1, Mid_2, Assign_Mark FROM Student_Internal_Marks WHERE Course_Code = ? AND session = ? AND sem_No = ?',
-    [courseCode, session, sem_No],
-    (err, result) => {
-      if (err) return res.status(500).json({ success: false, message: 'DB error' });
-      res.json({ success: true, marks: result });
-    }
-  );
+exports.updateStudent = async (req, res) => {
+	try {
+		const { name, email, password } = req.body;
+		const conn = await pool.getConnection();
+		const result = await conn.query('UPDATE students SET name = ?, email = ?, password = ? WHERE id = ?', [name, email, password, req.params.id]);
+		conn.release();
+		if (result.affectedRows === 0) return res.status(404).json({ error: 'Student not found' });
+		res.json({ id: req.params.id, name, email });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
+
+exports.deleteStudent = async (req, res) => {
+	try {
+		const conn = await pool.getConnection();
+		const result = await conn.query('DELETE FROM students WHERE id = ?', [req.params.id]);
+		conn.release();
+		if (result.affectedRows === 0) return res.status(404).json({ error: 'Student not found' });
+		res.json({ message: 'Student deleted' });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };

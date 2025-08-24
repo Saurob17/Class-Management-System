@@ -1,19 +1,12 @@
-const mysql = require('mysql');
-require('dotenv').config();
+// MariaDB connection using mariadb package
+const mariadb = require('mariadb');
 
-const con = mysql.createConnection({
-  host: process.env.DB_HOST || '127.0.0.1',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'Department'
+const pool = mariadb.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'class_management_db',
+  connectionLimit: 5
 });
 
-con.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err.stack);
-    return;
-  }
-  console.log('Connected to database.');
-});
-
-module.exports = con;
+module.exports = pool;

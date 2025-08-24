@@ -1,11 +1,11 @@
-// routes/studentRoutes.js
 const express = require('express');
 const router = express.Router();
 const studentController = require('../controllers/studentController');
 
-router.get('/batch-info', studentController.getBatchInfo);
-router.get('/course-count', studentController.getCourseCount);
-router.get('/courses', studentController.getCourses);
-router.get('/marks', studentController.getMarks);
+router.get('/', studentController.getAllStudents);
+router.get('/:id', studentController.getStudentById);
+router.post('/', studentController.createStudent);
+router.put('/:id', studentController.updateStudent);
+router.delete('/:id', studentController.deleteStudent);
 
 module.exports = router;
