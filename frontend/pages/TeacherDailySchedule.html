@@ -1,2 +1,198 @@
-<!-- Teacher Daily Schedule Page -->
-<!-- ...existing code from Teacher_daily_shidule.html... -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Teacher Daily Schedule</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Arial, sans-serif;
+			background: #f6f8fa;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			max-width: 900px;
+			margin: 40px auto;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+			padding: 32px 24px 24px 24px;
+		}
+		.header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 24px;
+		}
+		.header h1 {
+			font-size: 2.2rem;
+			color: #2d3748;
+			margin: 0;
+		}
+		.current-day {
+			font-size: 1.1rem;
+			color: #4a5568;
+			background: #e2e8f0;
+			padding: 6px 16px;
+			border-radius: 20px;
+		}
+		.day-tabs {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 18px;
+			flex-wrap: wrap;
+		}
+		.day-tab {
+			background: #edf2f7;
+			border: none;
+			border-radius: 18px;
+			padding: 8px 22px;
+			font-size: 1rem;
+			color: #2d3748;
+			cursor: pointer;
+			transition: background 0.2s, color 0.2s;
+		}
+		.day-tab.active {
+			background: #3182ce;
+			color: #fff;
+			font-weight: bold;
+		}
+		.schedule-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 10px;
+			background: #f7fafc;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+		.schedule-table th, .schedule-table td {
+			padding: 12px 10px;
+			text-align: left;
+		}
+		.schedule-table th {
+			background: #3182ce;
+			color: #fff;
+			font-weight: 600;
+		}
+		.schedule-table tr {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.schedule-table tr:last-child {
+			border-bottom: none;
+		}
+		.schedule-table td {
+			color: #2d3748;
+		}
+		.loading {
+			text-align: center;
+			padding: 40px 0;
+			color: #718096;
+		}
+		.floating-clock {
+			position: fixed;
+			top: 18px;
+			right: 32px;
+			background: #3182ce;
+			color: #fff;
+			padding: 10px 22px;
+			border-radius: 24px;
+			font-size: 1.1rem;
+			box-shadow: 0 2px 8px rgba(49,130,206,0.12);
+			z-index: 100;
+			letter-spacing: 0.5px;
+		}
+		@media (max-width: 700px) {
+			.container {
+				padding: 12px 4px 12px 4px;
+			}
+			.header h1 {
+				font-size: 1.3rem;
+			}
+			.floating-clock {
+				right: 8px;
+				top: 8px;
+				font-size: 0.95rem;
+				padding: 7px 10px;
+			}
+			.schedule-table th, .schedule-table td {
+				padding: 8px 4px;
+				font-size: 0.95rem;
+			}
+		}
+		@media (max-width: 500px) {
+			.container {
+				padding: 2px;
+			}
+			.header {
+				flex-direction: column;
+				gap: 8px;
+			}
+			.day-tabs {
+				gap: 4px;
+			}
+		}
+		@media (max-width: 600px) {
+			.schedule-table thead {
+				display: none;
+			}
+			.schedule-table, .schedule-table tbody, .schedule-table tr, .schedule-table td {
+				display: block;
+				width: 100%;
+			}
+			.schedule-table tr {
+				margin-bottom: 18px;
+				background: #fff;
+				border-radius: 8px;
+				box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+				border: none;
+			}
+			.schedule-table td {
+				position: relative;
+				padding-left: 50%;
+				border-bottom: 1px solid #e2e8f0;
+				font-size: 1rem;
+			}
+			.schedule-table tbody td::before {
+				content: attr(data-label);
+				position: absolute;
+				left: 15px;
+				width: 45%;
+				text-align: left;
+				font-weight: bold;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="floating-clock" id="clock"></div>
+	<div class="container">
+		<div class="header">
+			<h1>📚 Dynamic Class Schedule</h1>
+			<div class="current-day" id="currentDay">Loading...</div>
+		</div>
+		<div class="day-tabs" id="dayTabs"></div>
+		<div id="scheduleContainer">
+			<div class="loading">
+				<h3>Loading schedule data...</h3>
+				<p>Please wait while we fetch your class schedule from the database.</p>
+			</div>
+		</div>
+	</div>
+	<!-- Include the frontend JavaScript file for backend integration -->
+	<script src="../teacher_dailyShi_front.js"></script>
+	<script>
+	  function updateClock() {
+		const clockDiv = document.getElementById('clock');
+		const now = new Date();
+		const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+		const dayName = days[now.getDay()];
+		const dateStr = now.toLocaleDateString();
+		const timeStr = now.toLocaleTimeString();
+		clockDiv.textContent = `${dayName}, ${dateStr} | ${timeStr}`;
+	  }
+	  setInterval(updateClock, 1000);
+	  updateClock();
+	</script>
+</body>
+</html>
