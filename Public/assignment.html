@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignment Task Manager</title>
+  <style>
+    */* ===== General Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Body Styling ===== */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ===== Container ===== */
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* ===== Heading ===== */
+h1 {
+  text-align: center;
+  font-size: 2.2em;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 25px;
+}
+
+/* ===== Form Styling ===== */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102,126,234,0.4);
+  outline: none;
+}
+
+/* ===== Button Styling ===== */
+button {
+  width: 100%;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ===== Task Card ===== */
+.task-card {
+  background: #f8f9ff;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.task-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-card p {
+  font-size: 14px;
+  margin: 4px 0;
+  color: #555;
+}
+
+/* Delete Button inside card */
+.task-card .deleteBtn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.task-card .deleteBtn:hover {
+  background-color: #c0392b;
+}
+
+/* Countdown Timer */
+.task-card .countdown {
+  margin-top: 12px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* ===== Scrollable Task List ===== */
+#tasksList {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📌 Assignment Task Manager</h1>
+
+    <form id="taskForm">
+      <div class="form-group">
+        <label for="teacherId">👨‍🏫 Teacher Id *</label>
+        <input type="number" id="teacherId" required>
+      </div>
+
+      <div class="form-group">
+        <label for="courseCode">📘 Course Code *</label>
+        <input type="text" id="courseCode" required>
+      </div>
+
+      <div class="form-group">
+        <label for="courseName">📖 Course Name *</label>
+        <input type="text" id="courseName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="deadline">⏳ Deadline *</label>
+        <input type="date" id="deadline" required>
+      </div>
+
+      <div class="form-group">
+        <label for="session">📅 Session *</label>
+        <input type="text" id="session" required>
+      </div>
+
+      <div class="form-group">
+        <label for="topic">📝 Topic *</label>
+        <textarea id="topic" rows="3" required></textarea>
+      </div>
+
+      <button type="submit">➕ Add Assignment</button>
+    </form>
+
+    <div id="tasksList"></div>
+  </div>
+
+<script src="teacher_assignment.js"></script>
+</body>
+</html>
