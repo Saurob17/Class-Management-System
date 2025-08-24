@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Attendance</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			margin: 0;
+			padding: 20px;
+		}
+		.container {
+			max-width: 900px;
+			margin: auto;
+			background: white;
+			border-radius: 15px;
+			padding: 30px;
+			box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+		}
+		h1 {
+			text-align: center;
+			margin-bottom: 25px;
+			color: #444;
+		}
+		.course-list {
+			display: grid;
+			gap: 15px;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		}
+		.course-item {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+			transition: all 0.3s ease;
+			cursor: pointer;
+		}
+		.course-item:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+		}
+		.course-name {
+			font-size: 1.3em;
+			font-weight: bold;
+		}
+		.course-session, .class-confirm {
+			font-size: 0.9em;
+			opacity: 0.8;
+		}
+		.attendance-details {
+			background: #fff;
+			color: #333;
+			border-radius: 8px;
+			margin-top: 10px;
+			padding: 10px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+		}
+		.attendance-details h4 {
+			margin: 0 0 8px 0;
+			font-size: 1em;
+			color: #764ba2;
+		}
+		.attendance-details ul {
+			margin: 0;
+			padding: 0 0 0 18px;
+		}
+		.attendance-details li {
+			font-size: 0.95em;
+			margin-bottom: 4px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>📝 Attendance</h1>
+		<div class="course-list" id="teacherCourseList">
+			<!-- Courses will load here -->
+		</div>
+	</div>
+	<script src="../scripts/attendancePage.js"></script>
+</body>
+</html>
+<script src="../scripts/attendancePage.js"></script>

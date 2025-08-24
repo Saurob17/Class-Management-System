@@ -1,6 +1,7 @@
-
-// attendance_front.js
+// attendancePage.js
 // Handles teacher's course list and attendance view
+
+// ...existing code from attendence_front.js...
 
 document.addEventListener('DOMContentLoaded', () => {
   const courseListContainer = document.getElementById('teacherCourseList');
@@ -57,10 +58,45 @@ function renderCourseList(courses, container) {
       <button class="details-btn" data-session="${course.Session}">for details</button>
     `;
     // Add event listener for details button if needed
+
+    // Integrate backend attendance API
     courseCard.querySelector('.details-btn').addEventListener('click', () => {
-      // Implement details view logic here
-      alert(`Details for session: ${course.Session}`);
+      showAttendanceDetails(course.Session, courseCard);
     });
     container.appendChild(courseCard);
   });
+}
+
+/**
+ * Fetch attendance for a course/session from backend
+ * @param {string} session
+ * @returns {Promise<Array>} Array of attendance records
+ */
+async function fetchAttendance(session) {
+  const response = await fetch(`/api/attendance?session=${encodeURIComponent(session)}`);
+  if (!response.ok) throw new Error('Failed to fetch attendance');
+  return await response.json();
+}
+
+/**
+ * Show attendance details below the course card
+ * @param {string} session
+ * @param {HTMLElement} courseCard
+ */
+function showAttendanceDetails(session, courseCard) {
+  // Remove previous details if any
+  const prevDetails = courseCard.querySelector('.attendance-details');
+  if (prevDetails) prevDetails.remove();
+  fetchAttendance(session)
+    .then(attendanceRecords => {
+      let detailsHtml = '<div class="attendance-details"><h4>Attendance</h4><ul>';
+      attendanceRecords.forEach(record => {
+        detailsHtml += `<li>${record.studentId}: ${record.status} (${record.date})</li>`;
+      });
+      detailsHtml += '</ul></div>';
+      courseCard.insertAdjacentHTML('beforeend', detailsHtml);
+    })
+    .catch(err => {
+      courseCard.insertAdjacentHTML('beforeend', '<div class="attendance-details">Error loading attendance.</div>');
+    });
 }

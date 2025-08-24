@@ -1,57 +1,53 @@
+
+const API_BASE_URL = 'http://localhost:3000/api/assignments';
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("taskForm");
   const taskList = document.getElementById("tasksList");
-
-  // sessionStorage থেকে teacherId
   const teacherId = sessionStorage.getItem("teacherId");
 
   // Load assignments for this teacher only
-  fetch(`/api/assignments?teacherId=${teacherId}`)
+  fetch(`${API_BASE_URL}?teacherId=${teacherId}`)
     .then(res => res.json())
     .then(data => {
-      if (data.success) {
-        data.assignments.forEach(addTaskToUI);
+      if (Array.isArray(data)) {
+        data.forEach(addTaskToUI);
       }
     });
 
   // Form submit → Add new assignment
   form.addEventListener("submit", e => {
     e.preventDefault();
-
     const course_code = document.getElementById("courseCode").value;
     const course_name = document.getElementById("courseName").value;
     const deadline = document.getElementById("deadline").value;
     const session = document.getElementById("session").value;
     const topic = document.getElementById("topic").value;
-
-    // console.log("deadline sent to backend:", deadline);
-    // Teacher_Id sessionStorage থেকে নেওয়া
     const Teacher_Id = teacherId;
 
-    fetch("/api/assignments", {
+    fetch(API_BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ Teacher_Id, course_code, course_name, deadline, session, topic })
     })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
+        if (data.id) {
           addTaskToUI({ id: data.id, Teacher_Id, course_code, course_name, deadline, session, topic });
           form.reset();
         }
       });
   });
 
-  // Add Assignment to UI (existing addTaskToUI function)
+  // Add Assignment to UI
   function addTaskToUI(task) {
     const div = document.createElement("div");
     div.className = "task-card";
     const formattedDeadline = new Date(task.deadline);
     const yyyy = formattedDeadline.getFullYear();
-    const mm = String(formattedDeadline.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+    const mm = String(formattedDeadline.getMonth() + 1).padStart(2, '0');
     const dd = String(formattedDeadline.getDate()).padStart(2, '0');
     const deadline = `${yyyy}-${mm}-${dd}`;
-    // console.log("formattedDeadline in frontend:", deadline);
 
     div.innerHTML = `
       <h3>${task.course_name} (${task.course_code})</h3>
@@ -62,18 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
       <button class="deleteBtn">❌ Delete</button>
       <div class="countdown" id="countdown-${task.id}">⏳ Calculating...</div>
     `;
-    // console.log("task in frontend:", task);
-    // console.log("formattedDeadline in frontend:", deadline);
-    // Delete
+
     div.querySelector(".deleteBtn").addEventListener("click", () => {
-      fetch(`/api/assignments`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          course_code: task.course_code,
-          session: task.session,
-          // deadline: formattedDeadline
-        })
+      fetch(`${API_BASE_URL}/${task.id}`, {
+        method: "DELETE"
       })
         .then(res => res.json())
         .then(data => {
@@ -84,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
     });
-
 
     taskList.appendChild(div);
 
