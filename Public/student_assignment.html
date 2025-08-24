@@ -13,21 +13,38 @@
     }
     .page-title{color:#fff;text-align:center;font-size:2rem;font-weight:800;margin-bottom:18px}
     .subtle{color:#fff;text-align:center;opacity:.9;margin-bottom:18px}
-    .assignments-grid{
-      display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-      gap:18px;max-width:1200px;margin:0 auto;
+
+    table {
+      width: 95%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,.15);
+      table-layout: fixed; /* ensures columns have consistent width */
+      word-wrap: break-word; /* break long words */
     }
-    .assignment-card{
-      background:#fff; border-radius:16px; padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.12);
-      transition:.25s transform ease, .25s box-shadow ease;
-      overflow:hidden;
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
     }
-    .assignment-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
-    .pill{display:inline-block;background:#6c63ff;color:#fff;border-radius:999px;padding:6px 10px;font-size:.8rem;font-weight:700;margin-bottom:10px}
-    .course-name{font-weight:800;font-size:1.1rem;margin-bottom:8px;color:#1f2937;line-height:1.3}
-    .topic{font-size:.95rem;color:#475569;margin-bottom:12px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-    .row{font-size:.9rem;color:#334155;margin:6px 0}
+    th {
+      background: #6c63ff;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    tr:nth-child(even) {background: #f9f9ff;}
+    tr:hover {background: #f1f0ff;}
+    td {
+      font-size: .95rem;
+      color: #333;
+      white-space: pre-wrap;   /* ✅ preserves line breaks */
+      word-break: break-word;  /* ✅ breaks very long words */
+    }
+
     .no-assignments{
       text-align:center;color:#fff;background:rgba(255,255,255,.12);
       border:1px solid rgba(255,255,255,.3); backdrop-filter: blur(6px);
@@ -47,7 +64,66 @@
     </div>
   </div>
 
-  <script src="student_assignment_front.js"></script>
-</body>
+  <script>
+    // Example assignments (replace with fetch later)
+    const assignments = [
+      {
+        course: "web (7474)",
+        teacher: "1007",
+        session: "2022-2023",
+        topic: "asaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccccccccccccc ddddddddddddddddddddddddddddddddddddd eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee fffffffffffffffffffffffffffffffffffffff gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+        deadline: "2025-08-26"
+      },
+      {
+        course: "DataBase (07141275)",
+        teacher: "1007",
+        session: "2022-2023",
+        topic: "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj sssssssssssssssssssssssssssssssseppppppppppppppppppppppp ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppwwwwwwwwww",
+        deadline: "2025-08-31"
+      }
+    ];
 
+    function renderAssignments(list) {
+      if (list.length === 0) {
+        document.getElementById("assignmentContainer").innerHTML = `
+          <div class="no-assignments">No assignments available.</div>
+        `;
+        return;
+      }
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Teacher ID</th>
+              <th>Session</th>
+              <th>Topic</th>
+              <th>Deadline</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      list.forEach(a => {
+        html += `
+          <tr>
+            <td>${a.course}</td>
+            <td>${a.teacher}</td>
+            <td>${a.session}</td>
+            <td>${a.topic}</td>
+            <td>${a.deadline}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+      document.getElementById("assignmentContainer").innerHTML = html;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => renderAssignments(assignments), 1000); // simulate API
+    });
+  </script>
+</body>
 </html>
