@@ -1,3 +1,15 @@
+// Register result routes
+const resultRoutes = require('./routes/resultRoutes');
+app.use('/api/result', resultRoutes);
+// Register schedule routes
+const scheduleRoutes = require('./routes/scheduleRoutes');
+app.use('/api/schedule', scheduleRoutes);
+// Register course routes
+const courseRoutes = require('./routes/courseRoutes');
+app.use('/api/course', courseRoutes);
+// Register student routes
+const studentRoutes = require('./routes/studentRoutes');
+app.use('/api/student', studentRoutes);
 // Register teacher routes
 const teacherRoutes = require('./routes/teacherRoutes');
 app.use('/api/teacher', teacherRoutes);
