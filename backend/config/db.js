@@ -1,12 +1,16 @@
-// MariaDB connection using mariadb package
-const mariadb = require('mariadb');
+// Sequelize connection to MariaDB
+const { Sequelize } = require('sequelize');
 
-const pool = mariadb.createPool({
+const sequelize = new Sequelize('class_management_db', 'root', '', {
   host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'class_management_db',
-  connectionLimit: 5
+  dialect: 'mariadb',
+  logging: false,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 });
 
-module.exports = pool;
+module.exports = sequelize;
