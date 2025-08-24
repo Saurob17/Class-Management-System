@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+  <link rel="stylesheet" href="../styles/reg.css">
+</head>
+<body>
+
+  <div class="registration-container">
+    <h2>Register</h2>
+    <form id="registrationForm">
+      
+      <!-- Role Selection -->
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+      </div>
+
+      <!-- Common Fields -->
+      <div id="commonFields">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+      </div>
+
+      <!-- Student Specific Fields -->
+      <div id="studentFields" style="display:none;">
+        <div class="form-group">
+          <label for="roll">Roll:</label>
+          <input type="text" id="roll" name="roll">
+        </div>
+        <div class="form-group">
+          <label for="reg">Registration No:</label>
+          <input type="text" id="reg" name="reg">
+        </div>
+        <div class="form-group">
+          <label for="session">Session:</label>
+          <input type="text" id="session" name="session">
+        </div>
+        <div class="form-group">
+          <label for="semester_no">Semester No:</label>
+          <input type="number" id="semester_no" name="semester_no" min="1">
+        </div>
+      </div>
+
+      <!-- Teacher Specific Fields -->
+      <div id="teacherFields" style="display:none;">
+        <div class="form-group">
+          <label for="teacher_roll">Roll:</label>
+          <input type="text" id="teacher_roll" name="roll">
+        </div>
+        <div class="form-group">
+          <label for="teacher_reg">Registration No:</label>
+          <input type="text" id="teacher_reg" name="reg">
+        </div>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div id="registrationMessage"></div>
+  </div>
+
+  <script>
+    const roleSelect = document.getElementById('role');
+    const studentFields = document.getElementById('studentFields');
+    const teacherFields = document.getElementById('teacherFields');
+
+    roleSelect.addEventListener('change', function() {
+      if (roleSelect.value === 'student') {
+        studentFields.style.display = 'block';
+        teacherFields.style.display = 'none';
+      } else if (roleSelect.value === 'teacher') {
+        studentFields.style.display = 'none';
+        teacherFields.style.display = 'block';
+      }
+    });
+
+    // Initial state
+    if (roleSelect.value === 'student') {
+      studentFields.style.display = 'block';
+      teacherFields.style.display = 'none';
+    }
+  </script>
+
+  <script src="../scripts/registrationPage.js"></script>
+</body>
+</html>
