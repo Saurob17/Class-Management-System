@@ -35,13 +35,40 @@ app.get('/', (req, res) => {
 
 const sequelize = require('./config/db');
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connected successfully.');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Database connection failed:', err.message);
+const mariadb = require('mariadb');
+
+// Ensure database exists before Sequelize connects
+async function ensureDatabase() {
+  const dbName = 'class_management_db';
+  const pool = mariadb.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    connectionLimit: 1
   });
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    await conn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+    console.log(`Database '${dbName}' ensured.`);
+  } catch (err) {
+    console.error('Failed to ensure database:', err.message);
+    process.exit(1);
+  } finally {
+    if (conn) conn.release();
+    pool.end();
+  }
+}
+
+ensureDatabase().then(() => {
+  sequelize.authenticate()
+    .then(() => {
+      console.log('Database connected successfully.');
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Database connection failed:', err.message);
+    });
+});
