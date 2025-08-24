@@ -1,8 +1,6 @@
 // attendancePage.js
 // Handles teacher's course list and attendance view
 
-// ...existing code from attendence_front.js...
-
 document.addEventListener('DOMContentLoaded', () => {
   const courseListContainer = document.getElementById('teacherCourseList');
   const teacherId = sessionStorage.getItem('teacherId');
@@ -55,48 +53,38 @@ function renderCourseList(courses, container) {
       <div class="course-name">${course.Course_Code}</div>
       <div class="course-session">Session: ${course.Session}</div>
       <div class="class-confirm">Class: ${course.Class_Confirmation}</div>
-      <button class="details-btn" data-session="${course.Session}">for details</button>
+      <button class="details-btn" data-course="${course.Course_Code}" data-session="${course.Session}">for details</button>
+      <div class="attendance-details" style="display:none;"></div>
     `;
-    // Add event listener for details button if needed
-
-    // Integrate backend attendance API
-    courseCard.querySelector('.details-btn').addEventListener('click', () => {
-      showAttendanceDetails(course.Session, courseCard);
+    let detailsLoaded = false;
+    const detailsBtn = courseCard.querySelector('.details-btn');
+    const detailsDiv = courseCard.querySelector('.attendance-details');
+    detailsBtn.addEventListener('click', async () => {
+      if (detailsDiv.style.display === 'block') {
+        detailsDiv.style.display = 'none';
+        return;
+      }
+      detailsDiv.style.display = 'block';
+      detailsDiv.innerHTML = '<span class="spinner">⏳</span> Loading attendance...';
+      if (!detailsLoaded) {
+        try {
+          const res = await fetch(`/api/attendance?courseCode=${course.Course_Code}&session=${course.Session}`);
+          const data = await res.json();
+          if (data.success && Array.isArray(data.attendance)) {
+            if (data.attendance.length === 0) {
+              detailsDiv.innerHTML = 'No attendance data found.';
+            } else {
+              detailsDiv.innerHTML = '<ul>' + data.attendance.map(a => `<li>${a.date}: ${a.status}</li>`).join('') + '</ul>';
+            }
+          } else {
+            detailsDiv.innerHTML = 'No attendance data found.';
+          }
+        } catch (err) {
+          detailsDiv.innerHTML = 'Error loading attendance.';
+        }
+        detailsLoaded = true;
+      }
     });
     container.appendChild(courseCard);
   });
-}
-
-/**
- * Fetch attendance for a course/session from backend
- * @param {string} session
- * @returns {Promise<Array>} Array of attendance records
- */
-async function fetchAttendance(session) {
-  const response = await fetch(`/api/attendance?session=${encodeURIComponent(session)}`);
-  if (!response.ok) throw new Error('Failed to fetch attendance');
-  return await response.json();
-}
-
-/**
- * Show attendance details below the course card
- * @param {string} session
- * @param {HTMLElement} courseCard
- */
-function showAttendanceDetails(session, courseCard) {
-  // Remove previous details if any
-  const prevDetails = courseCard.querySelector('.attendance-details');
-  if (prevDetails) prevDetails.remove();
-  fetchAttendance(session)
-    .then(attendanceRecords => {
-      let detailsHtml = '<div class="attendance-details"><h4>Attendance</h4><ul>';
-      attendanceRecords.forEach(record => {
-        detailsHtml += `<li>${record.studentId}: ${record.status} (${record.date})</li>`;
-      });
-      detailsHtml += '</ul></div>';
-      courseCard.insertAdjacentHTML('beforeend', detailsHtml);
-    })
-    .catch(err => {
-      courseCard.insertAdjacentHTML('beforeend', '<div class="attendance-details">Error loading attendance.</div>');
-    });
 }

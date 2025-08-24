@@ -1,4 +1,3 @@
-
 // batchCoursePage.js
 document.addEventListener('DOMContentLoaded', () => {
 	const courseList = document.getElementById('courseList');
@@ -11,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		return;
 	}
 
+	courseList.innerHTML = '<span class="spinner">⏳</span> Loading courses...';
+
 	fetch(`/api/batch_courses?sem_No=${sem_No}`)
 		.then(res => res.json())
 		.then(data => {
@@ -22,7 +23,31 @@ document.addEventListener('DOMContentLoaded', () => {
 					div.innerHTML = `
 						<strong>${course.Course_Code}</strong> - ${course.Course_Name} 
 						(Semester: ${course.sem_No})
+						<button class="details-btn" data-course="${course.Course_Code}">Details</button>
+						<div class="course-details" style="display:none;"></div>
 					`;
+					const detailsBtn = div.querySelector('.details-btn');
+					const detailsDiv = div.querySelector('.course-details');
+					detailsBtn.addEventListener('click', async () => {
+						if (detailsDiv.style.display === 'block') {
+							detailsDiv.style.display = 'none';
+							return;
+						}
+						detailsDiv.style.display = 'block';
+						detailsDiv.innerHTML = '<span class="spinner">⏳</span> Loading details...';
+						try {
+							// Example: fetch more details if endpoint exists
+							const res = await fetch(`/api/course_details?courseCode=${course.Course_Code}`);
+							const data = await res.json();
+							if (data.success && data.details) {
+								detailsDiv.innerHTML = `<pre>${JSON.stringify(data.details, null, 2)}</pre>`;
+							} else {
+								detailsDiv.innerHTML = 'No details found.';
+							}
+						} catch (err) {
+							detailsDiv.innerHTML = 'Error loading details.';
+						}
+					});
 					courseList.appendChild(div);
 				});
 			} else {
