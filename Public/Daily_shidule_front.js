@@ -4,15 +4,17 @@ const currentDayElem = document.getElementById("currentDay");
 const dayTabsElem = document.getElementById("dayTabs");
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// Default session & semester (if not in localStorage yet)
+// Ensure session & semester exist in sessionStorage
 function initSessionInfo() {
-  if (!localStorage.getItem("session")) {
-    localStorage.setItem("session", "2023-2024"); 
+  if (!sessionStorage.getItem("session")) {
+    // fallback default if user came without login
+    sessionStorage.setItem("session", "2023-2024"); 
   }
-  if (!localStorage.getItem("sem_No")) {
-    localStorage.setItem("sem_No", "3"); 
+  if (!sessionStorage.getItem("sem_No")) {
+    sessionStorage.setItem("sem_No", "3"); 
   }
 }
+
 function getSessionInfo() {
   const session = sessionStorage.getItem("session");
   const sem_No = sessionStorage.getItem("sem_No");
@@ -25,7 +27,6 @@ function getSessionInfo() {
 
   return { session, sem_No };
 }
-
 
 // Auto-detect today
 let selectedDay = days[new Date().getDay()];
