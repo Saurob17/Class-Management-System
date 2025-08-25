@@ -457,9 +457,26 @@
 
       // ======= Initialize =======
       document.addEventListener("DOMContentLoaded", () => {
-        loadWeeklyRoutine();
-        loadNextClass();
-        setInterval(loadNextClass, 30000); // refresh next class every 30s
+        // Only fetch batch info and set session/sem_No if missing
+        if (batchId && (!session || !sem_No)) {
+          fetch(`/api/batch_info?id=${batchId}`)
+            .then(res => res.json())
+            .then(data => {
+              if(data.success){
+                session = data.session;
+                sem_No = data.sem_No;
+                sessionStorage.setItem("session", session);
+                sessionStorage.setItem("sem_No", sem_No);
+              }
+              loadWeeklyRoutine();
+              loadNextClass();
+              setInterval(loadNextClass, 30000);
+            });
+        } else {
+          loadWeeklyRoutine();
+          loadNextClass();
+          setInterval(loadNextClass, 30000);
+        }
       });
     </script>
   </body>
