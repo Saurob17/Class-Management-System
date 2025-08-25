@@ -7,7 +7,7 @@ const currentDayElem = document.getElementById('currentDay');
 
 // batch/session info
 const session = sessionStorage.getItem("session");
-const sem_No = sessionStorage.getItem("sem_No");
+const sem_No = sessionStorage.getItem("sem_No");//sdfyusid
 
 
 function createDayTabs() {

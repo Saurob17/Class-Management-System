@@ -11,7 +11,7 @@ app.post('/api/assignments', async (req, res) => {
     return res.json({ success: false, error: "Missing required fields" });
   }
   try {
-    const result = await db.query(
+    const result = await con.query(
       "INSERT INTO Course_Assignments (Teacher_Id, course_code, course_name, deadline, session, topic) VALUES (?, ?, ?, ?, ?, ?)",
       [Teacher_Id, course_code, course_name, deadline, session, topic]
     );
