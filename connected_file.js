@@ -37,11 +37,29 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
 });
 
+// =================
+// DAILY_SCHEDULE
+app.get('/api/daily_schedule', (req, res) => {
+  const { day, session, sem_No } = req.query;
+  if (!day || !session || !sem_No) {
+    return res.json({ success: false, message: 'Missing query parameters' });
+  }
+  const sql = `SELECT * FROM Daily_Schedule WHERE Day = ? AND session = ? AND sem_No = ? ORDER BY Start_Time ASC`;
+  con.query(sql, [day, session, sem_No], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.json({ success: false, message: 'DB error' });
+    }
+    res.json({ success: true, schedule: results });
+  });
+});
+
+// Catch-all route for static HTML files in Public
 // Catch-all route for static HTML files in Public
 app.get('/:page', (req, res) => {
   const file = path.join(__dirname, 'Public', req.params.page);
   res.sendFile(file, err => {
-    if (err) res.status(404).send('Page not found');
+    if (err) res.status(404).json({ success: false, message: 'Page not found' });
   });
 });
 
