@@ -112,7 +112,7 @@ async function renderInternalResults(courseCode) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${rec.Roll}</td>
-      <td>${rec.Attendance_Mark ?? ''}</td>
+      <td>${rec.Attendance_Mark ?? '0'}</td>
       <td>${rec.Mid_1 ?? ''}</td>
       <td>${rec.Mid_2 ?? ''}</td>
       <td>${rec.Assign_Mark ?? ''}</td>
