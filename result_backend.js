@@ -13,7 +13,7 @@ module.exports = function(app, con) {
     // console.log("📌 Fetching marks for courseCode:", courseCode, "session:", session);
 
     const sql = `
-      SELECT Attendance_Mark, Roll, Mid_1, Mid_2, Assign_Mark, Sem_CGPA
+      SELECT Attendance_Mark, Roll, Mid_1, Mid_2, Assign_Mark
       FROM Mark_Table
       WHERE Course_Code = ? AND Session = ?
     `;
