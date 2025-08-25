@@ -44,7 +44,7 @@ app.get('/api/daily_schedule', (req, res) => {
   if (!day || !session || !sem_No) {
     return res.json({ success: false, message: 'Missing query parameters' });
   }
-  const sql = `SELECT * FROM Daily_Schedule WHERE Day = ? AND session = ? AND sem_No = ? ORDER BY Start_Time ASC`;
+  const sql = `SELECT * FROM Daily_Schedule WHERE Day = ? AND Session = ? AND sem_No = ? ORDER BY Start_Time ASC`;
   con.query(sql, [day, session, sem_No], (err, results) => {
     if (err) {
       console.error(err);
