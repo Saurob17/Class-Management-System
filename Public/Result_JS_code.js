@@ -50,11 +50,12 @@ async function fetchCourses() {
 // Fetch Internal Marks
 // =======================
 async function fetchMarks(courseCode) {
+  console.log("📌 Fetching marks for:", { courseCode, session });
   if (!session) return [];
   try {
-    const res = await fetch(`/api/marks?courseCode=${courseCode}&session=${session}`);
+    const res = await fetch(`/api/internal_marks?courseCode=${courseCode}&session=${session}`);
     const data = await res.json();
-    console.log(`✅ Marks data fetched:`, data.marks);
+    console.log(`✅ Marks data fetched:`, data);
     if (!data.success || !Array.isArray(data.marks)) {
       console.log('⚠️ No marks data');
       return [];

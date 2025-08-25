@@ -112,10 +112,11 @@
           <div class="subtitle">Completed</div>
         </div>
         <div class="stat-card">
-          <h3>Next Class</h3>
-          <div class="number">2:30 PM</div>
-          <div class="subtitle">CSE210 - Room 305</div>
-        </div>
+  <h3>Next Class</h3>
+  <div class="number" id="nextClassTime">—</div>
+  <div class="subtitle" id="nextClassInfo">Loading...</div>
+</div>
+
       </section>
 
       <section class="routine-section">
@@ -186,8 +187,6 @@
   document.addEventListener('DOMContentLoaded',()=>{ loadWeeklyRoutine(); });
 </script>
 
-
-
   <script>
     // Show batch info in welcome message if available
     const batchId = sessionStorage.getItem('batchId');
@@ -223,6 +222,12 @@
         });
     }
   </script>
-<!-- ...existing code... -->
+
+
+
+
+
+
+<!-- .<script src="next_class_front.js"></script>..existing code... -->
 </body>
 </html>

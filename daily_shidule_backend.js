@@ -1,29 +1,46 @@
-// daily_schedule.js (backend)
+// teacher_assignment_backend.js
 module.exports = (app, con) => {
-  app.get('/api/daily_schedule', (req, res) => {
-    const { day, session, sem_No } = req.query;
+  // নতুন assignment insert
+  app.post("/api/assignments", (req, res) => {
+    const { teacher_id, course_code, course_name, deadline, session, topic } = req.body;
 
-    console.log("📌 Fetching schedu99le for:", day, session, sem_No);
-
-    if (!day || !session || !sem_No) {
-      return res.json({ success: false, message: "Day, Session, and sem_No are required" });
+    if (!teacher_id || !course_code || !course_name || !deadline || !session || !topic) {
+      return res.json({ success: false, message: "Missing required fields" });
     }
 
-    const sql = `
-      SELECT * 
-      FROM Daily_Schedule 
-      WHERE Day = ? AND Session = ? AND sem_No = ?
-      ORDER BY Start_Time
-    `;
+    const sql = `INSERT INTO Assignments 
+      (teacher_id, course_code, course_name, deadline, session, topic) 
+      VALUES (?, ?, ?, ?, ?, ?)`;
 
-    con.query(sql, [day, session, sem_No], (err, result) => {
+    con.query(sql, [teacher_id, course_code, course_name, deadline, session, topic], (err, result) => {
       if (err) {
-        console.error("❌ DB Error:", err);
-        return res.json({ success: false, message: "Database error" });
+        console.error("Insert Error:", err);
+        return res.json({ success: false, message: "DB Error" });
       }
-      console.log("📌 Schedule fetch8ed:", result);
+      res.json({ success: true, id: result.insertId });
+    });
+  });
 
-      res.json({ success: true, schedule: result });
+  // সব assignment load
+  app.get("/api/assignments", (req, res) => {
+    con.query("SELECT * FROM Assignments ORDER BY deadline ASC", (err, rows) => {
+      if (err) {
+        console.error("Fetch Error:", err);
+        return res.json({ success: false, message: "DB Error" });
+      }
+      res.json({ success: true, assignments: rows });
+    });
+  });
+
+  // assignment delete
+  app.delete("/api/assignments/:id", (req, res) => {
+    const id = req.params.id;
+    con.query("DELETE FROM Assignments WHERE id = ?", [id], (err) => {
+      if (err) {
+        console.error("Delete Error:", err);
+        return res.json({ success: false, message: "DB Error" });
+      }
+      res.json({ success: true });
     });
   });
 };
