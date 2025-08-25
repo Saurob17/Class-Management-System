@@ -430,12 +430,14 @@
         let innerHTML = `<div class="day-title">${day}</div>`;
         schedule.forEach((item) => {
           innerHTML += `
-          <div class="class-item">
-            <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
-            <div class="class-subject">${item.Course_Code} - ${item.teacher_name}</div>
-            <div class="class-room">${item.Class_Room}</div>
-          </div>
-        `;
+      <div class="class-item">
+        <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
+        <div class="class-subject">${item.Course_Code} - ${
+            item.Teacher_Short_Name || "Unknown"
+          }</div>
+        <div class="class-room">${item.Class_Room}</div>
+      </div>
+    `;
         });
         dayDiv.innerHTML = innerHTML;
         routineGrid.appendChild(dayDiv);

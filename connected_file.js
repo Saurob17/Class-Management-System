@@ -150,14 +150,23 @@ app.post('/api/teacher_courses',(req,res)=>{
 
 // =================
 // DAILY_SCHEDULE
-// Get all schedules
-app.get('/api/daily_schedule', (req,res)=>{
-  const sql = `SELECT * FROM Daily_Schedule`;
-  con.query(sql,(err,results)=>{
-    if(err) return res.json({success:false,message:'DB error.'});
-    res.json({success:true, schedules:results});
+// Get schedule by day, session, sem_No
+app.get('/api/daily_schedule', (req, res) => {
+  const { day, session, sem_No } = req.query;
+  if (!day || !session || !sem_No) {
+    return res.json({ success: false, message: 'Missing query parameters' });
+  }
+
+  const sql = `SELECT * FROM Daily_Schedule WHERE Day = ? AND session = ? AND sem_No = ? ORDER BY Start_Time ASC`;
+  con.query(sql, [day, session, sem_No], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.json({ success: false, message: 'DB error' });
+    }
+    res.json({ success: true, schedule: results });
   });
 });
+
 
 // Add schedule
 app.post('/api/daily_schedule',(req,res)=>{
