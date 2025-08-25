@@ -116,6 +116,7 @@ async function renderInternalResults(courseCode) {
       <td>${rec.Mid_1 ?? ''}</td>
       <td>${rec.Mid_2 ?? ''}</td>
       <td>${rec.Assign_Mark ?? ''}</td>
+      <td>${rec.Sem_CGPA ?? ''}</td>
     `;
     internalResultBody.appendChild(tr);
   }
