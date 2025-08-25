@@ -5,15 +5,6 @@ const dayTabsElem = document.getElementById("dayTabs");
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // Ensure session & semester exist in sessionStorage
-function initSessionInfo() {
-  if (!sessionStorage.getItem("session")) {
-    // fallback default if user came without login
-    sessionStorage.setItem("session", "2023-2024"); 
-  }
-  if (!sessionStorage.getItem("sem_No")) {
-    sessionStorage.setItem("sem_No", "3"); 
-  }
-}
 
 function getSessionInfo() {
   const session = sessionStorage.getItem("session");

@@ -41,10 +41,11 @@ async function handleStudentLogin(event) {
       },
       body: new URLSearchParams(formData)
     });
+
     const data = await response.json();
     if (data.success) {
       sessionStorage.setItem('batchId', data.batchId);
-      // Fetch session and sem_No using batchId and store in SessionStorage
+
       try {
         const batchInfoRes = await fetch(`/api/batch_info?id=${data.batchId}`);
         const batchInfo = await batchInfoRes.json();
@@ -54,12 +55,17 @@ async function handleStudentLogin(event) {
 
           console.log('Stored session:', batchInfo.session);
           console.log('Stored semester number:', batchInfo.sem_No);
-          
+
+          // ✅ Redirect AFTER session storage is set
+          window.location.href = data.redirect;
+        } else {
+          alert("Failed to load batch info.");
         }
       } catch (err) {
         console.error('Failed to fetch batch info:', err);
+        alert("Error loading batch info.");
       }
-      window.location.href = data.redirect;
+
     } else {
       alert(data.message);
     }

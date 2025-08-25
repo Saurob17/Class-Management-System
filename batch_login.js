@@ -1,30 +1,16 @@
-const path = require("path");
-
-module.exports = function(app, con) {
-  app.post("/batch_login", (req, res) => {
-    const { batch_user, batch_pass } = req.body;
-
-    const query = "SELECT * FROM Batch_Log_Info WHERE id = ? AND password = ?";
-    con.query(query, [batch_user, batch_pass], (err, result) => {
-      if (err) {
-        console.error("SQL ERROR:", err);
-        return res.status(500).json({ success: false, message: "❌ Database Error" });
-      }
-
-      if (result.length > 0) {
-        // Send batch info as JSON (like teacher login)
-        res.json({
-          success: true,
-          batchId: result[0].id,
-          semester: result[0].semester, // Make sure your table has this column
-          redirect: '/student_page.html'
-        });
-      } else {
-        res.json({
-          success: false,
-          message: "❌ Invalid Batch Login."
-        });
-      }
-    });
-  });
-};
+if (data.success) {
+  sessionStorage.setItem('batchId', data.batchId);
+  try {
+    const batchInfoRes = await fetch(`/api/batch_info?id=${data.batchId}`);
+    const batchInfo = await batchInfoRes.json();
+    if (batchInfo.success) {
+      sessionStorage.setItem('session', batchInfo.session);
+      sessionStorage.setItem('sem_No', batchInfo.sem_No);
+      console.log('Stored session:', batchInfo.session);
+      console.log('Stored semester number:', batchInfo.sem_No);
+    }
+  } catch (err) {
+    console.error('Failed to fetch batch info:', err);
+  }
+  window.location.href = data.redirect;  // 🚨 This runs before session storage finishes writing
+}
