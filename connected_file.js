@@ -36,7 +36,7 @@ teacher_page(app, con);
 batch_page(app, con);
 student_pages(app, con);
 student_cource_backend(app, con);
-teacherCourses(app, con);  
+teacherCourses(app, con); 
 teacherPageBackend(app, con); 
 dailyScheduleBackend(app, con); 
 resultBackend(app, con);
