@@ -6,40 +6,68 @@ const scheduleContainer = document.getElementById('scheduleContainer');
 const currentDayElem = document.getElementById('currentDay');
 
 // batch/session info
-const session = sessionStorage.getItem("session");
-const sem_No = sessionStorage.getItem("sem_No");//sdfyusid
+let session = sessionStorage.getItem("session");
+let sem_No = sessionStorage.getItem("sem_No");
+const batchId = sessionStorage.getItem("batchId");
 
+function ensureSessionInfo(callback) {
+  if (batchId && (!session || !sem_No)) {
+    fetch(`/api/batch_info?id=${batchId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          session = data.session;
+          sem_No = data.sem_No;
+          sessionStorage.setItem("session", session);
+          sessionStorage.setItem("sem_No", sem_No);
+        }
+        callback(data.success ? data.session : null, data.success ? data.sem_No : null);
+      });
+  } else {
+    callback(session, sem_No);
+  }
+}
 
 function createDayTabs() {
   dayTabs.innerHTML = '';
-  days.forEach(day => {
+  const todayIndex = new Date().getDay();
+  days.forEach((day, idx) => {
     const btn = document.createElement('button');
     btn.className = 'day-tab';
+    if (idx === todayIndex) btn.classList.add('active');
     btn.textContent = day;
-    btn.onclick = () => loadScheduleData(day);
+    btn.onclick = () => {
+      document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadScheduleData(day);
+    };
     dayTabs.appendChild(btn);
   });
 }
 
-function loadScheduleData(selectedDay) {
-  setActiveTab(selectedDay);
-  currentDayElem.textContent = selectedDay;
-  scheduleContainer.innerHTML = `<div class="loading"><h3>Loading schedule data...</h3></div>`;
-  
-  fetch(`/api/daily_schedule?day=${encodeURIComponent(selectedDay)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.success && Array.isArray(data.schedule) && data.schedule.length > 0) {
-        renderSchedule(data.schedule, selectedDay);
-      } else {
-        scheduleContainer.innerHTML = `<div class="no-classes">No classes scheduled for ${selectedDay}.</div>`;
-      }
-    })
-    .catch(() => {
-      scheduleContainer.innerHTML = `<div class="error">Error loading schedule. Try again later.</div>`;
-    });
-}
 
+function loadScheduleData(selectedDay) {
+  currentDayElem.textContent = selectedDay;
+  scheduleContainer.innerHTML = `<div class="loading"><h3>Loading schedule data...</h3><p>Please wait while we fetch your class schedule from the database.</p></div>`;
+  ensureSessionInfo((sess, sem) => {
+    if (!sess || !sem) {
+      scheduleContainer.innerHTML = `<div class="error">Session info missing. Please login again.</div>`;
+      return;
+    }
+    fetch(`/api/daily_schedule?day=${encodeURIComponent(selectedDay)}&session=${encodeURIComponent(sess)}&sem_No=${encodeURIComponent(sem)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.schedule) && data.schedule.length > 0) {
+          renderSchedule(data.schedule, selectedDay);
+        } else {
+          scheduleContainer.innerHTML = `<div class="no-classes">No classes scheduled for ${selectedDay}.</div>`;
+        }
+      })
+      .catch(() => {
+        scheduleContainer.innerHTML = `<div class="error">Error loading schedule. Try again later.</div>`;
+      });
+  });
+}
 
 function renderSchedule(schedule, day) {
   let html = `<div class="schedule-content active"><h2>${day} Schedule</h2>`;

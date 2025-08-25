@@ -167,6 +167,16 @@ app.get('/api/daily_schedule', (req, res) => {
   });
 });
 
+app.get('/api/weekly_schedule', (req,res)=>{
+  const {session, sem_No} = req.query;
+  const sql = `SELECT * FROM Daily_Schedule WHERE session=? AND sem_No=? ORDER BY FIELD(Day,'Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'), Start_Time`;
+  con.query(sql,[session,sem_No],(err,result)=>{
+    if(err) return handleDBError(res, err);
+    res.json({success:true, schedule:result});
+  });
+});
+
+
 
 // Add schedule
 app.post('/api/daily_schedule',(req,res)=>{
