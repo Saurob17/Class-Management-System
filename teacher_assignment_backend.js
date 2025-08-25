@@ -40,11 +40,15 @@ app.post('/api/assignments', async (req, res) => {
     if (!course_code || !session || !deadline) {
       return res.json({ success: false, message: "Missing delete identifiers" });
     }
-
+ console.log("delete success")
+ console.log("course_code:", course_code, "session:", session, "deadline:", deadline);
+ 
     con.query(
+     
       "DELETE FROM Course_Assignments WHERE course_code = ? AND session = ? AND deadline = ?",
       [course_code, session, deadline],
       (err, result) => {
+        
         if (err) {
           console.error("DB Delete Error:", err);
           return res.json({ success: false, message: "DB Error" });

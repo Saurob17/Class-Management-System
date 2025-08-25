@@ -55,16 +55,25 @@ div.innerHTML = `
 `;
 // ...existing code...
 
-    // delete
-    div.querySelector(".deleteBtn").addEventListener("click", () => {
-      fetch(`/api/assignments/${task.id}`, { method: "DELETE" })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            div.remove();
-          }
-        });
+   // ...existing code...
+div.querySelector(".deleteBtn").addEventListener("click", () => {
+  fetch("/api/assignments", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      course_code: task.course_code,
+      session: task.session,
+      deadline: task.deadline
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        div.remove();
+      }
     });
+});
+// ...existing code...
 
     taskList.appendChild(div);
 
