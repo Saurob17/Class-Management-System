@@ -184,6 +184,31 @@ app.post('/api/marks', (req, res) => {
   });
 });
 
+
+// Get all batches
+app.get('/api/batches', (req, res) => {
+  const sql = `SELECT id, password, session, sem_No FROM Batch_Log_Info`;
+  con.query(sql, (err, results) => {
+    if(err) return res.json({success:false, message:"DB error"});
+    res.json({success:true, batches: results});
+  });
+});
+
+// Add batch
+app.post('/api/batches', (req, res) => {
+  const { password, session, sem_No } = req.body;
+  if(!password || !session || !sem_No) {
+    return res.json({success:false, message:"Missing required fields"});
+  }
+
+  const sql = `INSERT INTO Batch_Log_Info (password, session, sem_No) VALUES (?, ?, ?)`;
+  con.query(sql, [password, session, sem_No], (err, result) => {
+    if(err) return res.json({success:false, message:"DB error"});
+    res.json({success:true});
+  });
+});
+
+
 // =================
 // Server
 const PORT = 3000;

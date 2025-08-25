@@ -210,3 +210,51 @@ document.getElementById("addScheduleBtn").addEventListener("click", () => {
     closeModal();
   });
 });
+
+
+// ------------------
+// Add Batch Modal
+document.getElementById("addBatchBtn").addEventListener("click", () => {
+  const html = `
+    <h2>Add Batch</h2>
+    <form id="batchForm">
+      <label>Password:</label>
+      <input type="text" name="password" required>
+      
+      <label>Session:</label>
+      <input type="text" name="session" required>
+      
+      <label>Semester No:</label>
+      <input type="number" name="sem_No" required>
+      
+      <div>
+        <button type="submit" class="saveBtn">Save</button>
+        <button type="button" class="cancelBtn">Cancel</button>
+      </div>
+    </form>
+  `;
+  openModal(html);
+
+  const form = document.getElementById("batchForm");
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    
+    try {
+      const res = await fetch('/api/batches', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if(result.success) {
+        alert("Batch added successfully!");
+      } else {
+        alert(result.message || "Error adding batch");
+      }
+      closeModal();
+    } catch(err) {
+      alert("Error: " + err.message);
+    }
+  });
+});
