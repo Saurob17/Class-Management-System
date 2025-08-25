@@ -80,12 +80,10 @@
       <h2>🎓 MyClass</h2>
       <ul>
         <li><a href="batch_cource.html"><span>📚</span> My Courses</a></li>
-     
         <li><a href="daily_shidule.html"><span>📢</span> Daily Schedule </a></li>
         <li><a href="student_assignment.html"><span>📝</span> Assignments</a></li>
-      
         <li><a href="Result_page.html"><span>📈</span> Results</a></li>
-        <li><a href="#"><span>🚪</span> Logout</a></li>
+        <li><a href="Login_page.html" id="logoutBtn"><span>🚪</span> Logout</a></li>
       </ul>
     </aside>
 
@@ -112,11 +110,10 @@
           <div class="subtitle">Completed</div>
         </div>
         <div class="stat-card">
-  <h3>Next Class</h3>
-  <div class="number" id="nextClassTime">—</div>
-  <div class="subtitle" id="nextClassInfo">Loading...</div>
-</div>
-
+          <h3>Next Class</h3>
+          <div class="number" id="nextClassTime">—</div>
+          <div class="subtitle" id="nextClassInfo">Loading...</div>
+        </div>
       </section>
 
       <section class="routine-section">
@@ -129,13 +126,13 @@
   </div>
 
   <script>
-  // Redirect to login if not logged in
-  if (!sessionStorage.getItem('batchId')) {
-    window.location.href = 'Login_page.html';
-  }
-  // Show/hide logout button based on login status
-  const logoutBtn = document.querySelector('a[href=""], a#logoutBtn');
-  if (logoutBtn) {
+    // Redirect to login if not logged in
+    if (!sessionStorage.getItem('batchId')) {
+      window.location.href = 'Login_page.html';
+    }
+
+    // Logout button logic
+    const logoutBtn = document.getElementById('logoutBtn');
     function updateLogoutVisibility() {
       if (sessionStorage.getItem('batchId')) {
         logoutBtn.style.display = 'inline-block';
@@ -143,74 +140,74 @@
         logoutBtn.style.display = 'none';
       }
     }
-    updateLogoutVisibility();
-    logoutBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.clear();
-      sessionStorage.clear();
+    if (logoutBtn) {
       updateLogoutVisibility();
-      window.location.href = 'Login_page.html';
-    });
-  }
-</script>
-  <!-- ...existing code... -->
-<script>
-  // Week starts from Sunday
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const routineGrid = document.getElementById('routineGrid');
-  const session = sessionStorage.getItem("session");
-  const sem_No = sessionStorage.getItem("sem_No");
+      logoutBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        updateLogoutVisibility();
+        window.location.href = 'Login_page.html';
+      });
+    }
+  </script>
 
-  function loadWeeklyRoutine(){
-    routineGrid.innerHTML = '';
-    days.forEach(day=>{
-      fetch(`/api/daily_schedule?day=${encodeURIComponent(day)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
-        .then(res=>res.json())
-        .then(data=>{
-          if(data.success && Array.isArray(data.schedule) && data.schedule.length>0){
-            renderDaySchedule(day,data.schedule);
-          } else { renderEmptyDay(day); }
-        }).catch(err=>{ console.error(err); renderErrorDay(day); });
-    });
-  }
+  <script>
+    // Week starts from Sunday
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const routineGrid = document.getElementById('routineGrid');
+    const session = sessionStorage.getItem("session");
+    const sem_No = sessionStorage.getItem("sem_No");
 
-  function renderDaySchedule(day,schedule){
-    const dayDiv = document.createElement('div');
-    dayDiv.className='day-schedule';
-    // Highlight today (JS: 0=Sunday, 1=Monday, ...)
-    const todayIndex = new Date().getDay();
-    if(day===days[todayIndex]) dayDiv.classList.add('today-indicator');
+    function loadWeeklyRoutine(){
+      routineGrid.innerHTML = '';
+      days.forEach(day=>{
+        fetch(`/api/daily_schedule?day=${encodeURIComponent(day)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
+          .then(res=>res.json())
+          .then(data=>{
+            if(data.success && Array.isArray(data.schedule) && data.schedule.length>0){
+              renderDaySchedule(day,data.schedule);
+            } else { renderEmptyDay(day); }
+          }).catch(err=>{ console.error(err); renderErrorDay(day); });
+      });
+    }
 
-    let innerHTML=`<div class="day-title">${day}</div>`;
-    schedule.forEach(item=>{
-      innerHTML+=`
-        <div class="class-item">
-          <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
-          <div class="class-subject">${item.Course_Code} - ${item.teacher_name}</div>
-          <div class="class-room">${item.Class_Room}</div>
-        </div>
-      `;
-    });
-    dayDiv.innerHTML=innerHTML;
-    routineGrid.appendChild(dayDiv);
-  }
+    function renderDaySchedule(day,schedule){
+      const dayDiv = document.createElement('div');
+      dayDiv.className='day-schedule';
+      const todayIndex = new Date().getDay();
+      if(day===days[todayIndex]) dayDiv.classList.add('today-indicator');
 
-  function renderEmptyDay(day){
-    const dayDiv = document.createElement('div');
-    dayDiv.className='day-schedule';
-    dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">No classes scheduled.</div>`;
-    routineGrid.appendChild(dayDiv);
-  }
+      let innerHTML=`<div class="day-title">${day}</div>`;
+      schedule.forEach(item=>{
+        innerHTML+=`
+          <div class="class-item">
+            <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
+            <div class="class-subject">${item.Course_Code} - ${item.teacher_name}</div>
+            <div class="class-room">${item.Class_Room}</div>
+          </div>
+        `;
+      });
+      dayDiv.innerHTML=innerHTML;
+      routineGrid.appendChild(dayDiv);
+    }
 
-  function renderErrorDay(day){
-    const dayDiv = document.createElement('div');
-    dayDiv.className='day-schedule';
-    dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">Error loading schedule.</div>`;
-    routineGrid.appendChild(dayDiv);
-  }
+    function renderEmptyDay(day){
+      const dayDiv = document.createElement('div');
+      dayDiv.className='day-schedule';
+      dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">No classes scheduled.</div>`;
+      routineGrid.appendChild(dayDiv);
+    }
 
-  document.addEventListener('DOMContentLoaded',()=>{ loadWeeklyRoutine(); });
-</script>
+    function renderErrorDay(day){
+      const dayDiv = document.createElement('div');
+      dayDiv.className='day-schedule';
+      dayDiv.innerHTML=`<div class="day-title">${day}</div><div class="class-item">Error loading schedule.</div>`;
+      routineGrid.appendChild(dayDiv);
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{ loadWeeklyRoutine(); });
+  </script>
 
   <script>
     // Show batch info in welcome message if available
@@ -218,7 +215,6 @@
     const semester = sessionStorage.getItem('semester');
     const welcomeHeader = document.querySelector('header h1');
     if (batchId) {
-      // Format batchId as 22-23 if it's 2223
       let batchDisplay = batchId;
       if (/^\d{4}$/.test(batchId)) {
         batchDisplay = batchId.slice(0,2) + '-' + batchId.slice(2);
@@ -228,14 +224,12 @@
       welcomeHeader.textContent = 'Welcome Learner';
     }
 
-    // Fetch and show batch session and semester from backend
     if (batchId) {
       fetch(`/api/batch_info?id=${batchId}`)
         .then(res => res.json())
         .then(function(data) {
           if (data.success) {
             document.querySelector('header p').textContent = `Session: ${data.session} | Semester: ${data.sem_No} | BSc in Computer Science & Engineering`;
-            // Fetch course count for this semester
             fetch(`/api/course_count?sem_No=${data.sem_No}`)
               .then(res => res.json())
               .then(function(courseData) {
@@ -248,56 +242,41 @@
     }
   </script>
 
+  <script>
+    // Next Class Display Script
+    function loadNextClass() {
+      const session = sessionStorage.getItem("session");
+      const sem_No = sessionStorage.getItem("sem_No");
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const todayIndex = new Date().getDay();
+      const currentDay = days[todayIndex];
 
+      const now = new Date();
+      const currentTime = now.toTimeString().split(" ")[0];
 
+      fetch(`/api/next_class?session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}&day=${encodeURIComponent(currentDay)}&currentTime=${encodeURIComponent(currentTime)}`)
+        .then(res => res.json())
+        .then(data => {
+          const timeElem = document.getElementById('nextClassTime');
+          const infoElem = document.getElementById('nextClassInfo');
 
-<script>
-  // ------------------------------
-  // Next Class Display Script (Filtered by session, sem_No, and current day)
-  // ------------------------------
-  function loadNextClass() {
-    // Get session and sem_No from sessionStorage
-    const session = sessionStorage.getItem("session"); // e.g., "2020-2021"
-    const sem_No = sessionStorage.getItem("sem_No");   // e.g., "8"
+          if (data.success && data.nextClass) {
+            timeElem.textContent = `${data.nextClass.Start_Time} - ${data.nextClass.End_Time}`;
+            infoElem.textContent = `${data.nextClass.Course_Code} (${data.nextClass.Class_Room}) - ${data.nextClass.Teacher_Short_Name || data.nextClass.teacher_name || 'Unknown'}`;
+          } else {
+            timeElem.textContent = "—";
+            infoElem.textContent = data.message || "No upcoming class";
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching next class:", err);
+          document.getElementById('nextClassTime').textContent = "—";
+          document.getElementById('nextClassInfo').textContent = "Error fetching class";
+        });
+    }
 
-    // Determine current day name
-    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const todayIndex = new Date().getDay();
-    const currentDay = days[todayIndex];
-
-    // Current time in HH:MM:SS format
-    const now = new Date();
-    const currentTime = now.toTimeString().split(" ")[0];
-
-    // Call backend API with query params
-    fetch(`/api/next_class?session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}&day=${encodeURIComponent(currentDay)}&currentTime=${encodeURIComponent(currentTime)}`)
-      .then(res => res.json())
-      .then(data => {
-        const timeElem = document.getElementById('nextClassTime');
-        const infoElem = document.getElementById('nextClassInfo');
-
-        if (data.success && data.nextClass) {
-          timeElem.textContent = `${data.nextClass.Start_Time} - ${data.nextClass.End_Time}`;
-          infoElem.textContent = `${data.nextClass.Course_Code} (${data.nextClass.Class_Room}) - ${data.nextClass.Teacher_Short_Name || data.nextClass.teacher_name || 'Unknown'}`;
-        } else {
-          timeElem.textContent = "—";
-          infoElem.textContent = data.message || "No upcoming class";
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching next class:", err);
-        document.getElementById('nextClassTime').textContent = "—";
-        document.getElementById('nextClassInfo').textContent = "Error fetching class";
-      });
-  }
-
-  // Load next class on page load
-  document.addEventListener('DOMContentLoaded', loadNextClass);
-
-  // Refresh every 30 seconds
-  setInterval(loadNextClass, 30000);
-</script>
-
-<!-- .<script src="next_class_front.js"></script>..existing code... -->
+    document.addEventListener('DOMContentLoaded', loadNextClass);
+    setInterval(loadNextClass, 30000);
+  </script>
 </body>
 </html>
