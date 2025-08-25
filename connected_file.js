@@ -119,14 +119,23 @@ app.post('/api/courses', (req, res) => {
 
 // =================
 // TEACHERS_COURSE
-// Get all assignments
-app.get('/api/teacher_courses', (req,res)=>{
-  const sql = `SELECT * FROM Teachers_Course`;
-  con.query(sql,(err,results)=>{
-    if(err) return res.json({success:false,message:'DB error.'});
-    res.json({success:true, assignments:results});
+// Get all teacher courses
+app.get('/api/teacher_courses', (req, res) => {
+  const { teacherId } = req.query;
+  if (!teacherId) {
+    return res.json({ success: false, message: "Missing teacherId" });
+  }
+
+  const sql = `SELECT * FROM Teachers_Course WHERE Teacher_Id = ?`;
+  con.query(sql, [teacherId], (err, results) => {
+    if (err) {
+      console.error("Error fetching teacher courses:", err);
+      return res.json({ success: false, message: "DB error." });
+    }
+    res.json({ success: true, courses: results });
   });
 });
+
 
 // Add teacher-course
 app.post('/api/teacher_courses',(req,res)=>{

@@ -25,7 +25,7 @@
       });
 
 document.addEventListener('DOMContentLoaded', function() {
-  // sessionStorage থেকে teacherId নিন
+
   const teacherId = sessionStorage.getItem('teacherId');
   const totalCoursesCount = document.getElementById('totalCoursesCount');
 
