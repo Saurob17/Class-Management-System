@@ -17,6 +17,11 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'Public')));
 
 // DB connect
+// Register route files for login endpoints
+const teacher_page = require('./teachers_pass_veri');
+const batch_page = require('./batch_login');
+teacher_page(app, con);
+batch_page(app, con);
 con.connect(err => {
   if (err) {
     console.error('DB connection failed:', err);
