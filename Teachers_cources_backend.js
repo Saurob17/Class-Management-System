@@ -1,9 +1,7 @@
 // Teachers_cources_backend.js
 module.exports = function(app, con) {
-  // ✅ Teacher এর course গুলো fetch করার API
   app.get('/api/teacher_courses', (req, res) => {
-    const teacherId = req.query.teacherId;  // frontend থেকে query হিসেবে আসবে
-    
+    const teacherId = req.query.teacherId; 
     // console.log("📌 teacherId received:", teacherId);
 
     if (!teacherId) {

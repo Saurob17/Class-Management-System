@@ -118,19 +118,6 @@ app.post('/api/courses', (req, res) => {
 // =================
 /// TEACHERS_COURSE
 // Get all teacher courses
-app.get('/api/teacher_courses', (req, res) => {
-  const { teacherId } = req.query;
-  if (!teacherId) return res.status(400).json({ success: false, message: "Missing teacherId" });
-
-  const sql = `SELECT * FROM Teachers_Course WHERE Teacher_Id = ?`;
-  con.query(sql, [teacherId], (err, results) => {
-    if (err) {
-      console.error("DB error:", err);
-      return res.status(500).json({ success: false, message: "Database error." });
-    }
-    res.json({ success: true, courses: results });
-  });
-});
 
 
 
