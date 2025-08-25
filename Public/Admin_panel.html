@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Class Management System</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+    }
+    .admin-nav {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      padding: 1.2em;
+      display: flex;
+      align-items: center;
+    }
+    .admin-nav a {
+      color: #fff;
+      margin-right: 1.5em;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1em;
+      border-radius: 6px;
+      padding: 0.5em 1em;
+      transition: background 0.2s;
+    }
+    .admin-nav a:hover { background: rgba(255,255,255,0.18); }
+    .logout { margin-left: auto; background: rgba(255,255,255,0.12); }
+    .admin-container {
+      max-width: 1100px;
+      margin: 2em auto;
+      background: rgba(255,255,255,0.08);
+      padding: 2em;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      color: #fff;
+    }
+    h2 { color: #ffd89b; }
+    .admin-section {
+      margin-bottom: 2em;
+      background: rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 1.5em;
+    }
+    .admin-actions button {
+      margin-right: .8em; margin-bottom: .5em;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 0.6em 1.2em; font-weight: 600; cursor: pointer;
+    }
+    .admin-actions button:hover { transform: translateY(-2px); }
+
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 999;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: white; padding: 2em; border-radius: 10px; width: 350px; color: black;
+    }
+    .modal-content h2 { margin-top: 0; }
+    .modal-content label { font-weight: 600; display: block; margin-top: 10px; }
+    .modal-content input { width: 100%; padding: 0.6em; margin-top: 5px; border-radius: 6px; border:1px solid #ccc; }
+    .modal-content button { margin-top: 10px; padding: 0.6em 1.2em; border:none; border-radius:6px; cursor:pointer; font-weight:600;}
+    .saveBtn { background: #28a745; color: white; }
+    .cancelBtn { background: #dc3545; color: white; margin-left:10px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    table th, table td { border: 1px solid #ccc; padding: 0.5em; text-align:center; }
+    table th { background:#ffd89b; color:#000; }
+    table td { color:#333; background:#fff; }
+  </style>
+</head>
+<body>
+  <nav class="admin-nav">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#teachers">Teachers</a>
+    <a href="#students">Students</a>
+    <a href="#courses">Courses</a>
+    <a href="#teachers_courses">Teachers Courses</a>
+    <a href="#daily_schedule">Daily Schedule</a>
+    <a href="Login_page.html" id="adminLogoutBtn" class="logout">Logout</a>
+  </nav>
+
+  <div class="admin-container">
+    <section id="dashboard" class="admin-section">
+      <h2>Admin Dashboard</h2>
+      <p>Welcome, Admin! Use the navigation above to manage the system.</p>
+    </section>
+
+    <!-- Teachers -->
+    <section id="teachers" class="admin-section">
+      <h2>Manage Teachers</h2>
+      <div class="admin-actions">
+        <button id="addTeacherBtn">Add Teacher</button>
+      </div>
+    </section>
+
+    <!-- Students -->
+    <section id="students" class="admin-section">
+      <h2>Manage Students</h2>
+      <div class="admin-actions">
+        <button id="addStudentBtn">Add Student</button>
+      </div>
+    </section>
+
+    <!-- Courses -->
+    <section id="courses" class="admin-section">
+      <h2>Manage Courses</h2>
+      <div class="admin-actions">
+        <button id="addCourseBtn">Add Course</button>
+      </div>
+    </section>
+
+    <!-- Teachers Courses -->
+<section id="teachers_courses" class="admin-section">
+  <h2>Assign Courses to Teachers</h2>
+  <div class="admin-actions">
+    <button id="addTeacherCourseBtn">Add Teacher-Course</button>
+  </div>
+</section>
+
+<!-- Daily Schedule -->
+<section id="daily_schedule" class="admin-section">
+  <h2>Daily Schedule</h2>
+  <div class="admin-actions">
+    <button id="addScheduleBtn">Add Schedule</button>
+  </div>
+</section>
+
+  </div>
+
+  <!-- Modal -->
+  <div id="crudModal" class="modal">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <script src="Admin_panel.js"></script>
+</body>
+</html>

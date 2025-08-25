@@ -4,45 +4,13 @@ const path = require('path');
 
 const con = require('./server'); // MySQL connection
 
-// Route files
-const teacher_page = require('./teachers_pass_veri');
-const batch_page = require('./batch_login');
-const student_pages = require('./student_pages');
-const student_cource_backend = require('./student_cource_backend');
-const teacherCourses = require('./Teachers_cources_backend'); 
-const teacherPageBackend = require('./Teacher_page_backedn');  
-const dailyScheduleBackend = require('./daily_shidule_backend');
-const resultBackend = require('./result_backend');
-const teacherAssignmentBackend = require('./teacher_assignment_backend');
-const teacherDailyShiBackend = require('./teacher_dailyShi_backend'); 
-//student_assignment_backend.js
-const studentAssignmentBackend = require('./Stu_Assignment');
-
 // -----------------
 // App initialization
 const app = express();
 
-// EJS Setup
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// -----------------
-// Register routes AFTER app initialized
-teacher_page(app, con);
-batch_page(app, con);
-student_pages(app, con);
-student_cource_backend(app, con);
-teacherCourses(app, con); 
-teacherPageBackend(app, con); 
-dailyScheduleBackend(app, con); 
-resultBackend(app, con);
-teacherAssignmentBackend(app, con);
-teacherDailyShiBackend(app, con);
-studentAssignmentBackend(app, con);
 
 // -----------------
 // Static files
@@ -62,35 +30,146 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
 });
 
-// Add marks endpoint
-app.post('/add_marks', (req, res) => {
-  const {
-    Course_Code,
-    Roll,
-    Attendance_Mark,
-    Mid_1,
-    Mid_2,
-    Assign_Mark,
-    Session
-  } = req.body;
+// =================
+// TEACHERS
+// Get all teachers
+app.get('/api/teachers', (req, res) => {
+  const sql = `SELECT Teacher_Id, teacher_name FROM Teacher_Log_Info`;
+  con.query(sql, (err, results) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true, teachers: results });
+  });
+});
 
-  if (!Course_Code || !Roll || Attendance_Mark === undefined) {
-    return res.json({ success: false, message: 'Missing required fields.' });
-  }
+// Add teacher
+app.post('/api/teachers', (req, res) => {
+  const { teacher_name, password } = req.body;
+  if (!teacher_name || !password) return res.json({ success: false, message: 'Missing fields.' });
 
-  const sql = `INSERT INTO Mark_Table (Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  con.query(sql, [Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session], (err, result) => {
-    if (err) {
-      console.error('Error inserting marks:', err);
-      return res.json({ success: false, message: 'DB error.' });
-    }
+  const sql = `INSERT INTO Teacher_Log_Info (teacher_name, password) VALUES (?, ?)`;
+  con.query(sql, [teacher_name, password], (err, result) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
     res.json({ success: true });
   });
 });
 
+// =================
+// STUDENTS
+// Get all students
+app.get('/api/students', (req, res) => {
+  const sql = `SELECT Roll, Student_Name, Registration, sem_No, Session FROM Student_Table`;
+  con.query(sql, (err, results) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true, students: results });
+  });
+});
+
+// Add student
+app.post('/api/students', (req, res) => {
+  const { Roll, Student_Name, Registration, sem_No, Session } = req.body;
+  if (!Roll || !Student_Name || !Registration || !sem_No || !Session) 
+    return res.json({ success: false, message: 'Missing fields.' });
+
+  const sql = `INSERT INTO Student_Table (Roll, Student_Name, Registration, sem_No, Session)
+               VALUES (?, ?, ?, ?, ?)`;
+  con.query(sql, [Roll, Student_Name, Registration, sem_No, Session], (err, result) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true });
+  });
+});
+
+// =================
+// COURSES
+// Get all courses
+app.get('/api/courses', (req, res) => {
+  const sql = `SELECT Course_Code, Course_Name, sem_No FROM Course_Info`;
+  con.query(sql, (err, results) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true, courses: results });
+  });
+});
+
+// Add course
+app.post('/api/courses', (req, res) => {
+  const { Course_Code, Course_Name, sem_No } = req.body;
+  if (!Course_Code || !Course_Name || !sem_No) 
+    return res.json({ success: false, message: 'Missing fields.' });
+
+  const sql = `INSERT INTO Course_Info (Course_Code, Course_Name, sem_No) VALUES (?, ?, ?)`;
+  con.query(sql, [Course_Code, Course_Name, sem_No], (err, result) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true });
+  });
+});
+
+// =================
+// TEACHERS_COURSE
+// Get all assignments
+app.get('/api/teacher_courses', (req,res)=>{
+  const sql = `SELECT * FROM Teachers_Course`;
+  con.query(sql,(err,results)=>{
+    if(err) return res.json({success:false,message:'DB error.'});
+    res.json({success:true, assignments:results});
+  });
+});
+
+// Add teacher-course
+app.post('/api/teacher_courses',(req,res)=>{
+  const {Teacher_Id, Course_Code, Session} = req.body;
+  if(!Teacher_Id || !Course_Code || !Session) return res.json({success:false,message:'Missing fields.'});
+  const sql = `INSERT INTO Teachers_Course (Teacher_Id, Course_Code, Session) VALUES (?,?,?)`;
+  con.query(sql,[Teacher_Id, Course_Code, Session],(err,result)=>{
+    if(err) return res.json({success:false,message:'DB error.'});
+    res.json({success:true});
+  });
+});
+
+// =================
+// DAILY_SCHEDULE
+// Get all schedules
+app.get('/api/daily_schedule', (req,res)=>{
+  const sql = `SELECT * FROM Daily_Schedule`;
+  con.query(sql,(err,results)=>{
+    if(err) return res.json({success:false,message:'DB error.'});
+    res.json({success:true, schedules:results});
+  });
+});
+
+// Add schedule
+app.post('/api/daily_schedule',(req,res)=>{
+  const {
+    Day, Course_Code, Session, Class_Room, Teacher_Short_Name,
+    Start_Time, End_Time, sem_No, Teacher_Id
+  } = req.body;
+  if(!Day || !Course_Code || !Session || !Class_Room || !Teacher_Short_Name)
+    return res.json({success:false,message:'Missing required fields.'});
+  const sql = `INSERT INTO Daily_Schedule 
+    (Day, Course_Code, Session, Class_Room, Teacher_Short_Name, Start_Time, End_Time, sem_No, Teacher_Id)
+    VALUES (?,?,?,?,?,?,?,?,?)`;
+  con.query(sql,[Day, Course_Code, Session, Class_Room, Teacher_Short_Name, Start_Time||null, End_Time||null, sem_No||null, Teacher_Id||null],
+    (err,result)=>{
+      if(err) return res.json({success:false,message:'DB error.'});
+      res.json({success:true});
+    });
+});
+
+
+// =================
+// MARKS
+app.post('/api/marks', (req, res) => {
+  const { Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session } = req.body;
+  if (!Course_Code || !Roll || Attendance_Mark === undefined) 
+    return res.json({ success: false, message: 'Missing fields.' });
+
+  const sql = `INSERT INTO Mark_Table (Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session)
+               VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  con.query(sql, [Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session], (err, result) => {
+    if (err) return res.json({ success: false, message: 'DB error.' });
+    res.json({ success: true });
+  });
+});
+
+// =================
 // Server
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
