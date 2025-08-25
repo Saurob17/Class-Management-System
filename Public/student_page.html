@@ -314,8 +314,22 @@
       const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
       const routineGrid = document.getElementById("routineGrid");
       const batchId = sessionStorage.getItem("batchId");
-      const session = sessionStorage.getItem("session");
-      const sem_No = sessionStorage.getItem("sem_No");
+      let session = sessionStorage.getItem("session");
+      let sem_No = sessionStorage.getItem("sem_No");
+
+      // Fallback: fetch batch info if missing
+      if (batchId && (!session || !sem_No)) {
+        fetch(`/api/batch_info?id=${batchId}`)
+          .then(res => res.json())
+          .then(data => {
+            if(data.success){
+              session = data.session;
+              sem_No = data.sem_No;
+              sessionStorage.setItem("session", session);
+              sessionStorage.setItem("sem_No", sem_No);
+            }
+          });
+      }
 
       // ======= Redirect if not logged in =======
       if (!batchId) window.location.href = "Login_page.html";
@@ -361,6 +375,12 @@
       function loadWeeklyRoutine() {
         routineGrid.innerHTML = "";
         days.forEach(day => {
+          // Debug log for parameters
+          console.log('Fetching daily schedule:', {day, session, sem_No});
+          if (!session || !sem_No) {
+            renderErrorDay(day);
+            return;
+          }
           fetch(`/api/daily_schedule?day=${encodeURIComponent(day)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
           .then(res => res.json())
           .then(data => {
