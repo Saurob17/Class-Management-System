@@ -103,6 +103,7 @@
       <a href="#">Notifications</a>
       <a href="#">Teachers Profile</a>
       <a href="#">Help</a>
+      <a href="#" id="logoutBtn" style="background: #ff6b6b; color: white; padding: 6px 16px; border-radius: 5px; margin-left: 15px; text-decoration: none;">Logout</a>
     </div>
   </div>
 
@@ -130,5 +131,27 @@
   </div>
 
   <script src="login.js"></script>
+
+  <script>
+    // Show/hide logout button based on login status
+    const logoutBtn = document.getElementById('logoutBtn');
+    function updateLogoutVisibility() {
+      if (sessionStorage.getItem('teacherId') || sessionStorage.getItem('batchId')) {
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        logoutBtn.style.display = 'none';
+      }
+    }
+    updateLogoutVisibility();
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.clear();
+      sessionStorage.clear();
+      updateLogoutVisibility();
+      window.location.href = 'Login_page.html';
+    });
+  </script>
 </body>
 </html>
