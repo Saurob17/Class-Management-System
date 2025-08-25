@@ -62,6 +62,34 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
 });
 
+// Add marks endpoint
+app.post('/add_marks', (req, res) => {
+  const {
+    Course_Code,
+    Roll,
+    Attendance_Mark,
+    Mid_1,
+    Mid_2,
+    Assign_Mark,
+    Sem_CGPA,
+    Session
+  } = req.body;
+
+  if (!Course_Code || !Roll || Attendance_Mark === undefined) {
+    return res.json({ success: false, message: 'Missing required fields.' });
+  }
+
+  const sql = `INSERT INTO Mark_Table (Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Sem_CGPA, Session)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  con.query(sql, [Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Sem_CGPA, Session], (err, result) => {
+    if (err) {
+      console.error('Error inserting marks:', err);
+      return res.json({ success: false, message: 'DB error.' });
+    }
+    res.json({ success: true });
+  });
+});
+
 // Server
 const PORT = 3000;
 app.listen(PORT, () => {
