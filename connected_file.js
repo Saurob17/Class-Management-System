@@ -218,6 +218,37 @@ app.post('/api/batches', (req, res) => {
 });
 
 
+// Get next class for a student
+app.get('/api/next_class', (req, res) => {
+  const { session, sem_No, day, currentTime } = req.query;
+
+  if (!session || !sem_No || !day || !currentTime) {
+    return res.json({ success: false, message: "Missing query parameters." });
+  }
+
+  const sql = `
+    SELECT * FROM Daily_Schedule
+    WHERE session = ? AND sem_No = ? AND Day = ? AND Start_Time > ?
+    ORDER BY Start_Time ASC
+    LIMIT 1
+  `;
+
+  con.query(sql, [session, sem_No, day, currentTime], (err, results) => {
+    if (err) {
+      console.error("Error fetching next class:", err);
+      return res.json({ success: false, message: "DB error." });
+    }
+
+    if (results.length > 0) {
+      res.json({ success: true, nextClass: results[0] });
+    } else {
+      res.json({ success: true, nextClass: null, message: "No more classes today" });
+    }
+  });
+});
+
+
+
 // =================
 // Server
 const PORT = 3000;
