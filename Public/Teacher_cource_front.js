@@ -14,8 +14,15 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
     // console.log("📌 Fetching courses for teacher:", teacherId);
 
     fetch(`/api/teacher_courses?teacherId=${teacherId}`)
-      .then(res => {
-        if (!res.ok) throw new Error("❌ Network response was not ok");
+      .then(async res => {
+        if (!res.ok) {
+          let msg = `❌ Network response was not ok (Status: ${res.status})`;
+          try {
+            const errData = await res.json();
+            if (errData.message) msg += `\n${errData.message}`;
+          } catch {}
+          throw new Error(msg);
+        }
         return res.json();
       })
       .then(data => {
@@ -47,8 +54,9 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
         }
       })
       .catch(err => {
-        console.error("❌ Fetch error:", err);
-        courseList.innerHTML = '<div>Error loading courses. Try again later.</div>';
+  console.error("❌ Fetch error:", err);
+  courseList.innerHTML = `<div>${err.message}</div>`;
+  if (courseCountDiv) courseCountDiv.textContent = '';
       });
   }
 }
