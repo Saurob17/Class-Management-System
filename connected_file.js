@@ -71,7 +71,6 @@ app.post('/add_marks', (req, res) => {
     Mid_1,
     Mid_2,
     Assign_Mark,
-    Sem_CGPA,
     Session
   } = req.body;
 
@@ -79,9 +78,9 @@ app.post('/add_marks', (req, res) => {
     return res.json({ success: false, message: 'Missing required fields.' });
   }
 
-  const sql = `INSERT INTO Mark_Table (Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Sem_CGPA, Session)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  con.query(sql, [Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Sem_CGPA, Session], (err, result) => {
+  const sql = `INSERT INTO Mark_Table (Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  con.query(sql, [Course_Code, Roll, Attendance_Mark, Mid_1, Mid_2, Assign_Mark, Session], (err, result) => {
     if (err) {
       console.error('Error inserting marks:', err);
       return res.json({ success: false, message: 'DB error.' });
