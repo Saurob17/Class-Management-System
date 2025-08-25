@@ -7,7 +7,7 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 // Default session & semester (if not in localStorage yet)
 function initSessionInfo() {
   if (!localStorage.getItem("session")) {
-    localStorage.setItem("session", "2023-24"); 
+    localStorage.setItem("session", "2023-2024"); 
   }
   if (!localStorage.getItem("sem_No")) {
     localStorage.setItem("sem_No", "3"); 
