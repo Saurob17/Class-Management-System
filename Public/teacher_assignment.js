@@ -2,6 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("taskForm");
   const taskList = document.getElementById("tasksList");
 
+  // Defensive checks for missing elements
+  if (!form) {
+    console.warn('taskForm element not found. Assignment form features will not work.');
+    return;
+  }
+  if (!taskList) {
+    console.warn('tasksList element not found. Assignment list features will not work.');
+    return;
+  }
+
   // sessionStorage থেকে teacherId
   const teacherId = sessionStorage.getItem("teacherId");
 
