@@ -5,6 +5,7 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
   // console.log("📌 Teacher ID from session:", teacherId);
   
   const courseList = document.getElementById('teacherCourseList');
+  const courseCountDiv = document.getElementById('courseCount');
 
   if (!teacherId) {
     courseList.innerHTML = '<div>Please login first to view your courses.</div>';
@@ -20,20 +21,28 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
       .then(data => {
         // console.log("📌 API Response:", data);
         courseList.innerHTML = '';
-
+        let total = 0;
         if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          total = data.courses.length;
+          courseCountDiv.textContent = `Total Courses: ${total}`;
           data.courses.forEach(course => {
             const div = document.createElement('div');
             div.className = 'course-item';
             div.innerHTML = `
-              <div class="course-name">${course.Course_Code}</div>
-              <div class="course-session">Session: ${course.Session}</div>
-              <div class="class-confirm">Class: ${course.Class_Confirmation}</div>
-              <button class="${course.Session}" >for details</button>
+              <div class="course-name">${course.Course_Code || 'N/A'}</div>
+              <div class="course-session">Session: ${course.Session || 'N/A'}</div>
+              <div class="class-confirm">Class: ${course.Class_Confirmation || 'N/A'}</div>
+              <button class="details-btn" data-course='${JSON.stringify(course)}'>for details</button>
             `;
+            // Add click handler for details button
+            div.querySelector('.details-btn').addEventListener('click', (e) => {
+              const courseData = JSON.parse(e.target.getAttribute('data-course'));
+              alert(`Course Details:\nCode: ${courseData.Course_Code}\nSession: ${courseData.Session}\nClass: ${courseData.Class_Confirmation || 'N/A'}`);
+            });
             courseList.appendChild(div);
           });
         } else {
+          courseCountDiv.textContent = 'Total Courses: 0';
           courseList.innerHTML = '<div>No courses found for you.</div>';
         }
       })

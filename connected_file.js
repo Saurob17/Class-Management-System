@@ -18,8 +18,6 @@ const teacherDailyShiBackend = require('./teacher_dailyShi_backend');
 //student_assignment_backend.js
 const studentAssignmentBackend = require('./Stu_Assignment');
 
-// -----------------
-// App initialization
 const app = express();
 
 // EJS Setup
