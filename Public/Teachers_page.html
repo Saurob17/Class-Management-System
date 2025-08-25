@@ -559,6 +559,12 @@
 
 
   <script src="teacher_assignment.js"></script>
+  <script>
+    // Redirect to login if not logged in
+    if (!sessionStorage.getItem('teacherId')) {
+      window.location.href = 'Login_page.html';
+    }
+  </script>
   <script src="teachers_pages_front.js"></script>
   <script>
     // Show/hide logout button based on login status
