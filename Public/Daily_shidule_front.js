@@ -1,4 +1,3 @@
-<script>
 // ========== CONFIG ==========
 const scheduleContainer = document.getElementById("scheduleContainer");
 const currentDayElem = document.getElementById("currentDay");
@@ -97,4 +96,3 @@ function loadScheduleData(day) {
 initSessionInfo();
 renderDayTabs();
 loadScheduleData(selectedDay);
-</script>
