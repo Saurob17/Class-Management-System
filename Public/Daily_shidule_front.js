@@ -14,11 +14,18 @@ function initSessionInfo() {
   }
 }
 function getSessionInfo() {
-  return {
-    session: localStorage.getItem("session"),
-    sem_No: localStorage.getItem("sem_No")
-  };
+  const session = sessionStorage.getItem("session");
+  const sem_No = sessionStorage.getItem("sem_No");
+
+  if (!session || !sem_No) {
+    // If missing, force login
+    window.location.href = "/login.html";
+    return null;
+  }
+
+  return { session, sem_No };
 }
+
 
 // Auto-detect today
 let selectedDay = days[new Date().getDay()];
@@ -42,7 +49,10 @@ function renderDayTabs() {
 
 // ========== FETCH & DISPLAY ==========
 function loadScheduleData(day) {
-  const { session, sem_No } = getSessionInfo();
+  const sessionInfo = getSessionInfo();
+  if (!sessionInfo) return; // prevent crash if redirected
+
+  const { session, sem_No } = sessionInfo;
   currentDayElem.textContent = day;
 
   scheduleContainer.innerHTML = `
