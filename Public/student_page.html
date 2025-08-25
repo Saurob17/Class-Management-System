@@ -128,6 +128,12 @@
     </main>
   </div>
 
+  <script>
+  // Redirect to login if not logged in
+  if (!sessionStorage.getItem('batchId')) {
+    window.location.href = 'Login_page.html';
+  }
+</script>
   <!-- ...existing code... -->
 <script>
   // Week starts from Sunday
