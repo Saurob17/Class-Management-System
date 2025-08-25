@@ -474,9 +474,11 @@
         <li>
           <a href="Teacher_daily_shidule.html"><span>📅</span> Schedule</a>
         </li>
-        <li>
-          <a href="#" id="logoutBtn"><span>🚪</span> Logout</a>
-        </li>
+            <li><a href="#" id="logoutBtn" class="btn btn-primary" style="padding: 8px 20px;">Logout</a>
+            </li>
+                <style>
+                    #logoutBtn { display: none; }
+                </style>
       </ul>
     </aside>
 
@@ -527,8 +529,6 @@
       <span>💬</span> Send Message
     </a>
 
-    <li><a href="#" id="logoutBtn" class="btn btn-primary" style="padding: 8px 20px;">Logout</a></li>
-                <!-- Removed duplicate logout button from quick actions -->
   </div>
   </div>
 
@@ -560,26 +560,24 @@
   <script src="teachers_pages_front.js"></script>
   <script>
     // Show/hide logout button based on login status
-    const logoutBtn = document.getElementById('logoutBtn');
-    function updateLogoutVisibility() {
-      if (sessionStorage.getItem('teacherId') || sessionStorage.getItem('batchId')) {
-        logoutBtn.style.display = 'inline-block';
-      } else {
-        logoutBtn.style.display = 'none';
-      }
-    }
-    updateLogoutVisibility();
+        const logoutBtn = document.getElementById('logoutBtn');
+        function updateLogoutVisibility() {
+            if (sessionStorage.getItem('teacherId') || sessionStorage.getItem('batchId')) {
+                logoutBtn.style.display = 'inline-block';
+            } else {
+                logoutBtn.style.display = 'none';
+            }
+        }
+        updateLogoutVisibility();
 
-    // Logout functionality
-    logoutBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.clear();
-      sessionStorage.clear();
-      updateLogoutVisibility();
-      window.location.href = 'Login_page.html';
-    });
-    // Hide by default
-    logoutBtn.style.display = 'none';
+        // Logout functionality
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            updateLogoutVisibility();
+            window.location.href = 'Login_page.html';
+        });
   </script>
 </body>
 
