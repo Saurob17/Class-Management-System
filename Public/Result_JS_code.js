@@ -113,6 +113,7 @@ async function renderInternalResults(courseCode) {
     tr.innerHTML = `
       <td>${rec.Roll}</td>
       <td>${rec.Attendance_Mark ?? '0'}</td>
+      <td>${rec.Mid_1 ?? ''}</td>
       <td>${rec.Mid_2 ?? ''}</td>
       <td>${rec.Assign_Mark ?? ''}</td>
       <td>${rec.Sem_CGPA ?? ''}</td>
