@@ -129,13 +129,8 @@
         animation: gradientShift 3s ease infinite;
       }
       @keyframes gradientShift {
-        0%,
-        100% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
+        0%,100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
       }
       .stat-card:hover {
         transform: translateY(-10px);
@@ -184,7 +179,7 @@
       }
       .routine-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
       }
 
@@ -249,43 +244,19 @@
 
       /* ======= Responsive ======= */
       @media (max-width: 768px) {
-        .container {
-          flex-direction: column;
-        }
-        .sidebar {
-          width: 100%;
-          padding: 20px;
-        }
-        .main-content {
-          padding: 20px;
-        }
-        header h1 {
-          font-size: 28px;
-        }
-        .stats-cards {
-          grid-template-columns: 1fr;
-        }
-        .routine-grid {
-          grid-template-columns: 1fr;
-        }
+        .container { flex-direction: column; }
+        .sidebar { width: 100%; padding: 20px; }
+        .main-content { padding: 20px; }
+        header h1 { font-size: 28px; }
+        .stats-cards { grid-template-columns: 1fr; }
+        .routine-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 480px) {
-        .sidebar h2 {
-          font-size: 22px;
-        }
-        .sidebar ul li a {
-          font-size: 14px;
-          padding: 12px 15px;
-        }
-        .sidebar ul li a span {
-          font-size: 18px;
-        }
-        header h1 {
-          font-size: 24px;
-        }
-        .stat-card .number {
-          font-size: 28px;
-        }
+        .sidebar h2 { font-size: 22px; }
+        .sidebar ul li a { font-size: 14px; padding: 12px 15px; }
+        .sidebar ul li a span { font-size: 18px; }
+        header h1 { font-size: 24px; }
+        .stat-card .number { font-size: 28px; }
       }
     </style>
   </head>
@@ -294,21 +265,11 @@
       <aside class="sidebar">
         <h2>🎓 MyClass</h2>
         <ul>
-          <li>
-            <a href="batch_cource.html"><span>📚</span> My Courses</a>
-          </li>
-          <li>
-            <a href="daily_shidule.html"><span>📢</span> Daily Schedule </a>
-          </li>
-          <li>
-            <a href="student_assignment.html"><span>📝</span> Assignments</a>
-          </li>
-          <li>
-            <a href="Result_page.html"><span>📈</span> Results</a>
-          </li>
-          <li>
-            <a href="Login_page.html" id="logoutBtn"><span>🚪</span> Logout</a>
-          </li>
+          <li><a href="batch_cource.html"><span>📚</span> My Courses</a></li>
+          <li><a href="daily_shidule.html"><span>📢</span> Daily Schedule </a></li>
+          <li><a href="student_assignment.html"><span>📝</span> Assignments</a></li>
+          <li><a href="Result_page.html"><span>📈</span> Results</a></li>
+          <li><a href="Login_page.html" id="logoutBtn"><span>🚪</span> Logout</a></li>
         </ul>
       </aside>
 
@@ -343,216 +304,143 @@
 
         <section class="routine-section">
           <h2><span>📅</span> Weekly Class Routine</h2>
-          <div class="routine-grid" id="routineGrid">
-            <!-- Dynamic weekly routine -->
-          </div>
+          <div class="routine-grid" id="routineGrid"></div>
         </section>
       </main>
     </div>
 
     <script>
-      // Redirect to login if not logged in
-      if (!sessionStorage.getItem("batchId")) {
-        window.location.href = "Login_page.html";
-      }
+      // ======= Global Variables =======
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const routineGrid = document.getElementById("routineGrid");
+      const batchId = sessionStorage.getItem("batchId");
+      const session = sessionStorage.getItem("session");
+      const sem_No = sessionStorage.getItem("sem_No");
 
-      // Logout button logic
+      // ======= Redirect if not logged in =======
+      if (!batchId) window.location.href = "Login_page.html";
+
+      // ======= Logout =======
       const logoutBtn = document.getElementById("logoutBtn");
-      function updateLogoutVisibility() {
-        if (sessionStorage.getItem("batchId")) {
-          logoutBtn.style.display = "inline-block";
-        } else {
-          logoutBtn.style.display = "none";
-        }
-      }
       if (logoutBtn) {
-        updateLogoutVisibility();
         logoutBtn.addEventListener("click", function (e) {
           e.preventDefault();
           localStorage.clear();
           sessionStorage.clear();
-          updateLogoutVisibility();
           window.location.href = "Login_page.html";
         });
       }
-    </script>
 
-    <script>
-      // Week starts from Sunday
-      const days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-      const routineGrid = document.getElementById("routineGrid");
-      const session = sessionStorage.getItem("session");
-      const sem_No = sessionStorage.getItem("sem_No");
+      // ======= Update Welcome Header =======
+      const welcomeHeader = document.querySelector("header h1");
+      if (batchId) {
+        let batchDisplay = /^\d{4}$/.test(batchId) ? batchId.slice(0,2)+"-"+batchId.slice(2) : batchId;
+        welcomeHeader.textContent = `Welcome Learners (Batch ${batchDisplay})`;
+      }
 
-      function loadWeeklyRoutine() {
-        routineGrid.innerHTML = "";
-        days.forEach((day) => {
-          fetch(
-            `/api/daily_schedule?day=${encodeURIComponent(
-              day
-            )}&session=${encodeURIComponent(
-              session
-            )}&sem_No=${encodeURIComponent(sem_No)}`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              if (
-                data.success &&
-                Array.isArray(data.schedule) &&
-                data.schedule.length > 0
-              ) {
-                renderDaySchedule(day, data.schedule);
-              } else {
-                renderEmptyDay(day);
+      // ======= Fetch Batch Info & Course Count =======
+      if (batchId) {
+        fetch(`/api/batch_info?id=${batchId}`)
+        .then(res => res.json())
+        .then(data => {
+          if(data.success){
+            document.querySelector("header p").textContent =
+              `Session: ${data.session} | Semester: ${data.sem_No} | BSc in Computer Science & Engineering`;
+            fetch(`/api/course_count?sem_No=${data.sem_No}`)
+            .then(res => res.json())
+            .then(courseData => {
+              if(courseData.success){
+                document.getElementById("courseCount").textContent = courseData.count;
               }
-            })
-            .catch((err) => {
-              console.error(err);
-              renderErrorDay(day);
             });
+          }
         });
       }
 
-      function renderDaySchedule(day, schedule) {
+      // ======= Weekly Routine =======
+      function loadWeeklyRoutine() {
+        routineGrid.innerHTML = "";
+        days.forEach(day => {
+          fetch(`/api/daily_schedule?day=${encodeURIComponent(day)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
+          .then(res => res.json())
+          .then(data => {
+            if(data.success && Array.isArray(data.schedule) && data.schedule.length>0){
+              renderDaySchedule(day, data.schedule);
+            } else renderEmptyDay(day);
+          })
+          .catch(err => {
+            console.error(err);
+            renderErrorDay(day);
+          });
+        });
+      }
+
+      function renderDaySchedule(day, schedule){
         const dayDiv = document.createElement("div");
         dayDiv.className = "day-schedule";
-        const todayIndex = new Date().getDay();
-        if (day === days[todayIndex]) dayDiv.classList.add("today-indicator");
+        if(day === days[new Date().getDay()]) dayDiv.classList.add("today-indicator");
 
-        let innerHTML = `<div class="day-title">${day}</div>`;
-        schedule.forEach((item) => {
-          innerHTML += `
-      <div class="class-item">
-        <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
-        <div class="class-subject">${item.Course_Code} - ${
-            item.Teacher_Short_Name || "Unknown"
-          }</div>
-        <div class="class-room">${item.Class_Room}</div>
-      </div>
-    `;
+        let html = `<div class="day-title">${day}</div>`;
+        schedule.forEach(item => {
+          html += `
+            <div class="class-item">
+              <div class="class-time">${item.Start_Time} - ${item.End_Time}</div>
+              <div class="class-subject">${item.Course_Code} - ${item.Teacher_Short_Name||"Unknown"}</div>
+              <div class="class-room">${item.Class_Room}</div>
+            </div>`;
         });
-        dayDiv.innerHTML = innerHTML;
+        dayDiv.innerHTML = html;
         routineGrid.appendChild(dayDiv);
       }
 
-      function renderEmptyDay(day) {
+      function renderEmptyDay(day){
         const dayDiv = document.createElement("div");
         dayDiv.className = "day-schedule";
         dayDiv.innerHTML = `<div class="day-title">${day}</div><div class="class-item">No classes scheduled.</div>`;
         routineGrid.appendChild(dayDiv);
       }
 
-      function renderErrorDay(day) {
+      function renderErrorDay(day){
         const dayDiv = document.createElement("div");
         dayDiv.className = "day-schedule";
         dayDiv.innerHTML = `<div class="day-title">${day}</div><div class="class-item">Error loading schedule.</div>`;
         routineGrid.appendChild(dayDiv);
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
-        loadWeeklyRoutine();
-      });
-    </script>
-
-    <script>
-      // Show batch info in welcome message if available
-      const batchId = sessionStorage.getItem("batchId");
-      const semester = sessionStorage.getItem("semester");
-      const welcomeHeader = document.querySelector("header h1");
-      if (batchId) {
-        let batchDisplay = batchId;
-        if (/^\d{4}$/.test(batchId)) {
-          batchDisplay = batchId.slice(0, 2) + "-" + batchId.slice(2);
-        }
-        welcomeHeader.textContent = `Welcome Learners (Batch ${batchDisplay})`;
-      } else {
-        welcomeHeader.textContent = "Welcome Learner";
-      }
-
-      if (batchId) {
-        fetch(`/api/batch_info?id=${batchId}`)
-          .then((res) => res.json())
-          .then(function (data) {
-            if (data.success) {
-              document.querySelector(
-                "header p"
-              ).textContent = `Session: ${data.session} | Semester: ${data.sem_No} | BSc in Computer Science & Engineering`;
-              fetch(`/api/course_count?sem_No=${data.sem_No}`)
-                .then((res) => res.json())
-                .then(function (courseData) {
-                  if (courseData.success) {
-                    document.getElementById("courseCount").textContent =
-                      courseData.count;
-                  }
-                });
-            }
-          });
-      }
-    </script>
-
-    <script>
-      // Next Class Display Script
-      function loadNextClass() {
-        const session = sessionStorage.getItem("session");
-        const sem_No = sessionStorage.getItem("sem_No");
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
+      // ======= Next Class =======
+      function loadNextClass(){
         const todayIndex = new Date().getDay();
         const currentDay = days[todayIndex];
-
         const now = new Date();
         const currentTime = now.toTimeString().split(" ")[0];
 
-        fetch(
-          `/api/next_class?session=${encodeURIComponent(
-            session
-          )}&sem_No=${encodeURIComponent(sem_No)}&day=${encodeURIComponent(
-            currentDay
-          )}&currentTime=${encodeURIComponent(currentTime)}`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            const timeElem = document.getElementById("nextClassTime");
-            const infoElem = document.getElementById("nextClassInfo");
+        fetch(`/api/next_class?session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}&day=${encodeURIComponent(currentDay)}&currentTime=${encodeURIComponent(currentTime)}`)
+        .then(res => res.json())
+        .then(data => {
+          const timeElem = document.getElementById("nextClassTime");
+          const infoElem = document.getElementById("nextClassInfo");
 
-            if (data.success && data.nextClass) {
-              timeElem.textContent = `${data.nextClass.Start_Time} - ${data.nextClass.End_Time}`;
-              infoElem.textContent = `${data.nextClass.Course_Code} (${
-                data.nextClass.Class_Room
-              }) - ${data.nextClass.Teacher_Short_Name || "Unknown"}`;
-            } else {
-              timeElem.textContent = "—";
-              infoElem.textContent = data.message || "No upcoming class";
-            }
-          })
-          .catch((err) => {
-            console.error("Error fetching next class:", err);
-            document.getElementById("nextClassTime").textContent = "—";
-            document.getElementById("nextClassInfo").textContent =
-              "Error fetching class";
-          });
+          if(data.success && data.nextClass){
+            timeElem.textContent = `${data.nextClass.Start_Time} - ${data.nextClass.End_Time}`;
+            infoElem.textContent = `${data.nextClass.Course_Code} (${data.nextClass.Class_Room}) - ${data.nextClass.Teacher_Short_Name||"Unknown"}`;
+          } else {
+            timeElem.textContent = "—";
+            infoElem.textContent = data.message||"No upcoming class";
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching next class:", err);
+          document.getElementById("nextClassTime").textContent = "—";
+          document.getElementById("nextClassInfo").textContent = "Error fetching class";
+        });
       }
 
-      document.addEventListener("DOMContentLoaded", loadNextClass);
-      setInterval(loadNextClass, 30000); // Refresh every 30 seconds
-
-      document.addEventListener("DOMContentLoaded", loadNextClass);
-      setInterval(loadNextClass, 30000);
+      // ======= Initialize =======
+      document.addEventListener("DOMContentLoaded", () => {
+        loadWeeklyRoutine();
+        loadNextClass();
+        setInterval(loadNextClass, 30000); // refresh next class every 30s
+      });
     </script>
   </body>
 </html>

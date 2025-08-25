@@ -22,9 +22,10 @@ function createDayTabs() {
 }
 
 function loadScheduleData(selectedDay) {
+  setActiveTab(selectedDay);
   currentDayElem.textContent = selectedDay;
   scheduleContainer.innerHTML = `<div class="loading"><h3>Loading schedule data...</h3></div>`;
-// console.log("Fetching schedule for:", selectedDay, session, sem_No);
+  
   fetch(`/api/daily_schedule?day=${encodeURIComponent(selectedDay)}&session=${encodeURIComponent(session)}&sem_No=${encodeURIComponent(sem_No)}`)
     .then(res => res.json())
     .then(data => {
@@ -38,6 +39,7 @@ function loadScheduleData(selectedDay) {
       scheduleContainer.innerHTML = `<div class="error">Error loading schedule. Try again later.</div>`;
     });
 }
+
 
 function renderSchedule(schedule, day) {
   let html = `<div class="schedule-content active"><h2>${day} Schedule</h2>`;
