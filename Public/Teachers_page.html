@@ -584,7 +584,8 @@
             localStorage.clear();
             sessionStorage.clear();
             updateLogoutVisibility();
-            window.location.href = 'Login_page.html';
+            location.reload();
+            // After reload, the login check at the top will redirect to Login_page.html
         });
   </script>
 </body>
