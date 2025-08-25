@@ -38,23 +38,53 @@ app.get('/', (req, res) => {
 });
 
 // =================
-// DAILY_SCHEDULE
-app.get('/api/daily_schedule', (req, res) => {
+// ================= Daily Schedule API =================
+app.get("/api/daily_schedule", (req, res) => {
   const { day, session, sem_No } = req.query;
-  if (!day || !session || !sem_No) {
-    return res.json({ success: false, message: 'Missing query parameters' });
-  }
-  const sql = `SELECT * FROM Daily_Schedule WHERE Day = ? AND Session = ? AND sem_No = ? ORDER BY Start_Time ASC`;
-  con.query(sql, [day, session, sem_No], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.json({ success: false, message: 'DB error' });
+
+  // Base query
+  let sql = `SELECT Day, Course_Code, Session, Class_Room, Teacher_Short_Name, Start_Time, End_Time, sem_No 
+             FROM Daily_Schedule`;
+  let params = [];
+
+  // Add filters if provided
+  if (day || session || sem_No) {
+    sql += " WHERE ";
+    let conditions = [];
+
+    if (day) {
+      conditions.push("Day = ?");
+      params.push(day);
     }
+    if (session) {
+      conditions.push("Session = ?");
+      params.push(session);
+    }
+    if (sem_No) {
+      conditions.push("sem_No = ?");
+      params.push(sem_No);
+    }
+
+    sql += conditions.join(" AND ");
+  }
+
+  sql += " ORDER BY Start_Time ASC";
+
+  // Run query
+  con.query(sql, params, (err, results) => {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.json({ success: false, message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.json({ success: true, schedule: [], message: "No classes found" });
+    }
+
     res.json({ success: true, schedule: results });
   });
 });
 
-// Catch-all route for static HTML files in Public
 // Catch-all route for static HTML files in Public
 app.get('/:page', (req, res) => {
   const file = path.join(__dirname, 'Public', req.params.page);
