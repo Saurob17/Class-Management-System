@@ -9,7 +9,7 @@ module.exports = function(app, con) {
     }
 
     con.query(
-      'SELECT Course_Code, Session, Class_Confirmation FROM Teachers_Course WHERE Teacher_Id = ?', 
+      'SELECT Course_Code, Session FROM Teachers_Course WHERE Teacher_Id = ?', 
       [teacherId],
       (err, result) => {
         if (err) {
