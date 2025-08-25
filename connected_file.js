@@ -26,8 +26,18 @@ con.connect(err => {
 });
 
 // Home route
+
+// Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'Login_page.html'));
+});
+
+// Catch-all route for static HTML files in Public
+app.get('/:page', (req, res) => {
+  const file = path.join(__dirname, 'Public', req.params.page);
+  res.sendFile(file, err => {
+    if (err) res.status(404).send('Page not found');
+  });
 });
 
 // =================
