@@ -51,6 +51,10 @@ async function handleStudentLogin(event) {
         if (batchInfo.success) {
           sessionStorage.setItem('session', batchInfo.session);
           sessionStorage.setItem('sem_No', batchInfo.sem_No);
+
+          console.log('Stored session:', batchInfo.session);
+          console.log('Stored semester number:', batchInfo.sem_No);
+          
         }
       } catch (err) {
         console.error('Failed to fetch batch info:', err);
