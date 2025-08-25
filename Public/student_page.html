@@ -133,6 +133,25 @@
   if (!sessionStorage.getItem('batchId')) {
     window.location.href = 'Login_page.html';
   }
+  // Show/hide logout button based on login status
+  const logoutBtn = document.querySelector('a[href=""], a#logoutBtn');
+  if (logoutBtn) {
+    function updateLogoutVisibility() {
+      if (sessionStorage.getItem('batchId')) {
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        logoutBtn.style.display = 'none';
+      }
+    }
+    updateLogoutVisibility();
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.clear();
+      sessionStorage.clear();
+      updateLogoutVisibility();
+      window.location.href = 'Login_page.html';
+    });
+  }
 </script>
   <!-- ...existing code... -->
 <script>
