@@ -16,10 +16,10 @@ module.exports = function(app, con) {
                  WHERE m.Course_Code = ? AND s.Session = ? AND s.sem_No = ?`;
     con.query(sql, [courseCode, session, sem_No], (err, result) => {
       if (err) {
-        console.log('DB error:', err);
+        // console.log('DB error:', err);
         return res.json({ success: false, message: 'DB error' });
       }
-      console.log('Result data:', JSON.stringify(result, null, 2)); // Print data to console
+      // console.log('Result data:', JSON.stringify(result, null, 2)); // Print data to console
       res.json({ success: true, marks: result });
     });
   });

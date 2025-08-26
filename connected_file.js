@@ -16,7 +16,7 @@ const resultBackend = require('./result_backend');
 const teacherAssignmentBackend = require('./teacher_assignment_backend');
 const teacherDailyShiBackend = require('./teacher_dailyShi_backend'); 
 //student_assignment_backend.js
-const studentAssignmentBackend = require('./student_assignment_backend');
+const studentAssignmentBackend = require('./Stu_Assignment');
 
 // -----------------
 // App initialization
@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
 });
 
 // Server
-const PORT = 700;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

@@ -1,7 +1,7 @@
 // /home/kali/clone_project/teacher_dailyShi_backend.js
 
 module.exports = (app, con) => {
-  console.log("✅ Teacher Daily Schedule API loaded");
+  // console.log("✅ Teacher Daily Schedule API loaded");
 
   // 👉 Teacher daily schedule API
   app.get("/api/teacher_daily_schedule", (req, res) => {

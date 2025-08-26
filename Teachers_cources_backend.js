@@ -4,7 +4,7 @@ module.exports = function(app, con) {
   app.get('/api/teacher_courses', (req, res) => {
     const teacherId = req.query.teacherId;  // frontend থেকে query হিসেবে আসবে
     
-    console.log("📌 teacherId received:", teacherId);
+    // console.log("📌 teacherId received:", teacherId);
 
     if (!teacherId) {
       return res.status(400).json({ success: false, message: 'No teacher ID provided' });
@@ -18,7 +18,7 @@ module.exports = function(app, con) {
           console.error("❌ DB error:", err);
           return res.status(500).json({ success: false, message: 'DB error' });
         }
-        console.log("📌 Courses fetched for teacher:", result);
+        // console.log("📌 Courses fetched for teacher:", result);
         res.json({ success: true, courses: result });
       }
     );

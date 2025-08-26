@@ -3,7 +3,7 @@ module.exports = (app, con) => {
   app.get('/api/daily_schedule', (req, res) => {
     const { day, session, sem_No } = req.query;
 
-    console.log("📌 Fetching schedu99le for:", day, session, sem_No);
+    // console.log("📌 Fetching schedu99le for:", day, session, sem_No);
 
     if (!day || !session || !sem_No) {
       return res.json({ success: false, message: "Day, Session, and sem_No are required" });
@@ -21,7 +21,7 @@ module.exports = (app, con) => {
         console.error("❌ DB Error:", err);
         return res.json({ success: false, message: "Database error" });
       }
-      console.log("📌 Schedule fetch8ed:", result);
+      // console.log("📌 Schedule fetch8ed:", result);
 
       res.json({ success: true, schedule: result });
     });
@@ -31,7 +31,9 @@ module.exports = (app, con) => {
 
 app.get('/api/next_class', (req, res) => {
   const { session, sem_No, day, currentTime } = req.query;
+  // console.log("📌 Fetching next class for:", { session, sem_No, day, currentTime });
   if (!session || !sem_No || !day || !currentTime) {
+    // console.log("❌ Missing parameters:", { session, sem_No, day, currentTime });
     return res.json({ success: false, message: "Missing required parameters" });
   }
 
@@ -42,8 +44,16 @@ app.get('/api/next_class', (req, res) => {
     ORDER BY Start_Time ASC
     LIMIT 1
   `;
+
+  // console.log("✅ Running query with:", { session, sem_No, day, currentTime });
+
   con.query(sql, [session, sem_No, day, currentTime], (err, result) => {
-    if (err) return res.json({ success: false, message: "Database error" });
+    if (err) {
+      console.error("DB Error:", err);
+      return res.json({ success: false, message: "Database error" });
+    }
+
+    // console.log("Query result:", result);
 
     if (result.length > 0) {
       res.json({ success: true, nextClass: result[0] });

@@ -6,7 +6,7 @@ module.exports = function(app, con) {
   app.post("/teacher_login", (req, res) => {
     const { teacher_user, teacher_pass } = req.body;
 
-    console.log(req.body); // Log the request body for debugging
+    // console.log(req.body); // Log the request body for debugging
 
 
 

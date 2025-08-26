@@ -1,60 +1,68 @@
-// ✅ student login-এর সময় অবশ্যই sessionStorage.setItem("session", "2022-2023") করে রাখবেন
-const sessionVal = sessionStorage.getItem("session");
+document.addEventListener("DOMContentLoaded", () => {
+  const assignmentContainer = document.getElementById("assignmentContainer");
 
-function createCard(a, idx) {
-  return `
-    <div class="assignment-card" style="animation-delay:${Math.min(idx * 60, 600)}ms">
-      <span class="pill">${a.course_code ?? ""}</span>
-      <div class="course-name" title="${a.course_name ?? ""}">${a.course_name ?? ""}</div>
-      <div class="topic" title="${a.topic ?? ""}">${a.topic ?? ""}</div>
-      <div class="row"><b>Session:</b> ${a.session ?? ""}</div>
-      <div class="row"><b>Teacher ID:</b> ${a.Teacher_Id ?? ""}</div>
-    </div>
-  `;
-}
-
-async function loadAssignments() {
-  const wrap = document.getElementById("assignmentContainer");
-
-  if (!sessionVal) {
-    wrap.innerHTML = `
-      <div class="no-assignments">
-        ⚠️ Session not found. Please log in again.
-      </div>`;
+  // Get student session from sessionStorage
+  const studentSession = sessionStorage.getItem("session"); 
+  console.log("Student session:", studentSession); // optional log
+  if (!studentSession) {
+    assignmentContainer.innerHTML = "<p>Session not found. Please log in.</p>";
     return;
   }
 
-  try {
-    const qs = new URLSearchParams();
-    qs.set("session", sessionVal);
-console.log("Fetching assignments for session:", sessionVal);
-    const res = await fetch(`/api/assignments?${qs.toString()}`, {
-      headers: { "Accept": "application/json" }
+  // Fetch assignments for this session only
+  fetch(`/api/student_assignment?session=${encodeURIComponent(studentSession)}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fetched assignments:", data); // optional log
+      if (!data.success) {
+        assignmentContainer.innerHTML = `<p>Error loading assignments: ${data.message}</p>`;
+        return;
+      }
+
+      if (data.assignments.length === 0) {
+        assignmentContainer.innerHTML = "<p>No assignments for your session.</p>";
+        return;
+      }
+
+      assignmentContainer.innerHTML = "";
+
+      data.assignments.forEach(task => {
+        const div = document.createElement("div");
+        div.className = "task-card";
+
+        const formattedDeadline = new Date(task.deadline);
+        const yyyy = formattedDeadline.getFullYear();
+        const mm = String(formattedDeadline.getMonth() + 1).padStart(2, "0");
+        const dd = String(formattedDeadline.getDate()).padStart(2, "0");
+        const deadlineStr = `${yyyy}-${mm}-${dd}`;
+
+        div.innerHTML = `
+          <h3>${task.course_name} (${task.course_code})</h3>
+          <p><b>Teacher ID:</b> ${task.Teacher_Id}</p>
+          <p><b>Session:</b> ${task.session}</p>
+          <p><b>Topic:</b> ${task.topic}</p>
+          <p><b>Deadline:</b> ${deadlineStr}</p>
+          <div class="countdown" id="countdown-${task.id}">⏳ Calculating...</div>
+        `;
+
+        assignmentContainer.appendChild(div);
+
+        const countdownEl = div.querySelector(`#countdown-${task.id}`);
+        const deadlineTime = new Date(task.deadline).getTime();
+        setInterval(() => {
+          const now = new Date().getTime();
+          const distance = deadlineTime - now;
+
+          if (distance <= 0) {
+            countdownEl.innerText = "⏰ Deadline Passed!";
+            return;
+          }
+
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          countdownEl.innerText = `⏳ ${days}d ${hours}h ${minutes}m left`;
+        }, 60000);
+      });
     });
-    console.log(res);
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const data = await res.json();
-
-    if (data?.success && Array.isArray(data.assignments) && data.assignments.length > 0) {
-      wrap.innerHTML =
-        `<div class="assignments-grid">
-          ${data.assignments.map((a, i) => createCard(a, i)).join("")}
-        </div>`;
-    } else {
-      wrap.innerHTML = `
-        <div class="no-assignments">
-          📋 No assignments found for session <b>${sessionVal}</b>.
-        </div>`;
-    }
-  } catch (err) {
-    console.error("Error loading assignments:", err);
-    wrap.innerHTML = `
-      <div class="no-assignments">
-        ⚠️ Error loading assignments. Please try again.
-      </div>`;
-  }
-}
-
-loadAssignments();
+});

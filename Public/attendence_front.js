@@ -2,7 +2,7 @@
 if (window.location.pathname.endsWith('teachers_cources.html')) { 
 
   const teacherId = sessionStorage.getItem('teacherId');
-  console.log("📌 Teacher ID from session:", teacherId);
+  // console.log("📌 Teacher ID from session:", teacherId);
   
   const courseList = document.getElementById('teacherCourseList');
 
@@ -10,7 +10,7 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
     courseList.innerHTML = '<div>Please login first to view your courses.</div>';
   } else {
     // Fetch teacher courses from backend
-    console.log("📌 Fetching courses for teacher:", teacherId);
+    // console.log("📌 Fetching courses for teacher:", teacherId);
 
     fetch(`/api/teacher_courses?teacherId=${teacherId}`)
       .then(res => {
@@ -18,7 +18,7 @@ if (window.location.pathname.endsWith('teachers_cources.html')) {
         return res.json();
       })
       .then(data => {
-        console.log("📌 API Response:", data);
+        // console.log("📌 API Response:", data);
         courseList.innerHTML = '';
 
         if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {

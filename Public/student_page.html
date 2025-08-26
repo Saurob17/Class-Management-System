@@ -226,45 +226,6 @@
 
 
 
-
-<script>
-  // ------------------------------
-  // Next Class Display Script
-  // ------------------------------
-  function loadNextClass() {
-    fetch('/api/next_class') // No session/sem_No needed
-      .then(res => res.json())
-      .then(data => {
-        const timeElem = document.getElementById('nextClassTime');
-        const infoElem = document.getElementById('nextClassInfo');
-
-        if (data.success && data.nextClass) {
-          // Display next class time
-          timeElem.textContent = `${data.nextClass.Start_Time} - ${data.nextClass.End_Time}`;
-          // Display course, room, teacher
-          infoElem.textContent = `${data.nextClass.Course_Code} (${data.nextClass.Class_Room}) - ${data.nextClass.Teacher_Short_Name || data.nextClass.teacher_name || 'Unknown'}`;
-        } else {
-          // No more classes today
-          timeElem.textContent = "—";
-          infoElem.textContent = data.message || "No upcoming class";
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching next class:", err);
-        document.getElementById('nextClassTime').textContent = "—";
-        document.getElementById('nextClassInfo').textContent = "Error fetching class";
-      });
-  }
-
-  // Load next class on page load
-  document.addEventListener('DOMContentLoaded', loadNextClass);
-
-  // Optionally, refresh every 30 seconds
-  setInterval(loadNextClass, 30000);
-</script>
-
-
-
 <script>
   // ------------------------------
   // Next Class Display Script (Filtered by session, sem_No, and current day)
